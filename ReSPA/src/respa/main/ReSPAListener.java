@@ -35,7 +35,7 @@ import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
  * Search listener
  *
  */
-public class MiserListener extends PropertyListenerAdapter{
+public class ReSPAListener extends PropertyListenerAdapter{
 
 
 
@@ -139,7 +139,7 @@ public class MiserListener extends PropertyListenerAdapter{
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private InputDetection inputDetectionManager;
 
-	public MiserListener(Config conf, JPF jpf) {
+	public ReSPAListener(Config conf, JPF jpf) {
 
 		try {
 

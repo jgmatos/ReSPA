@@ -15,7 +15,7 @@ import java.util.List;
 import respa.leak.CollectedLeak;
 import respa.main.Core;
 import respa.main.Labeling;
-import respa.main.MiserListener;
+import respa.main.ReSPAListener;
 import respa.main.OutputManager;
 import respa.main.Symbolic;
 import respa.main.SystemOut;
@@ -633,8 +633,8 @@ public class ReSPA extends Search {
 
 		if(Nd.isFinducing())
 			return backupNs;
-		else if(MiserListener.f) {
-			MiserListener.f = false;
+		else if(ReSPAListener.f) {
+			ReSPAListener.f = false;
 			backupNs.setFinducing(true);
 			return backupNs;
 		}
@@ -858,7 +858,7 @@ public class ReSPA extends Search {
 					}
 
 				}
-				else if(isEndState()&&!MiserListener.fInducing.isEmpty()) {
+				else if(isEndState()&&!ReSPAListener.fInducing.isEmpty()) {
 					//TODO: merge elseif with if
 					if (isNewState()) {
 
@@ -986,7 +986,7 @@ public class ReSPA extends Search {
 
 
 		currentNode.setFinducing(false);
-		if(MiserListener.fInducing.contains(statelabel.getConstraint())){
+		if(ReSPAListener.fInducing.contains(statelabel.getConstraint())){
 			currentNode.setFinducing(true);
 		}
 
@@ -1004,11 +1004,11 @@ public class ReSPA extends Search {
 
 	private void checkAndSetFinducing(StateLabel statelabel) {
 
-		if(MiserListener.f){
+		if(ReSPAListener.f){
 			System.out.println("f inducing node: "+statelabel+" - "+statelabel.getConstraint());
 			currentNode.setFinducing(true);
-			MiserListener.fInducing.clear();
-			MiserListener.f=false;
+			ReSPAListener.fInducing.clear();
+			ReSPAListener.f=false;
 		}
 		
 
