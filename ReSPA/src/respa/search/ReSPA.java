@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import respa.leak.CollectedLeak;
 import respa.main.Core;
@@ -171,6 +172,9 @@ public class ReSPA extends Search {
 				Node fnode = getPHI(first);
 				logPhiget(fnode);
 
+				ArrayList<PathCondition> pcs = new ArrayList<PathCondition>();
+				pcs.add(fnode.getPC());
+				
 				it = 0;
 				double cost;
 				do{
@@ -217,8 +221,9 @@ public class ReSPA extends Search {
 					else {
 
 						Log.verboseLog("\n\n\n\n\n\n\n Iteration: "+it);
-						logRetainer(fnode);
-						Log.verboseLog("\n\n\n\n\n\n\n ");
+						
+						pcs.add(fnode.getPC());
+						
 
 					}
 
@@ -226,8 +231,21 @@ public class ReSPA extends Search {
 					
 
 				}
-				while(cost > fnode.getLeak());
+				while(cost > fnode.getLeak() && Core.maxAttempts <= pcs.size());
 
+				
+				
+				if(Core.maxAttempts <= pcs.size()){
+					Log.verboseLog("[ReSPA][SPA] --> reached the maximum number of allowed iterations. Returning a random PC... \n\n\n");
+					logRetainer(pcs.get((new Random()).nextInt(pcs.size())));
+				}
+				else{
+					logRetainer(pcs.get(pcs.size()-1));
+					Log.verboseLog("\n\n\n\n\n\n\n ");
+				}
+					
+
+				
 			}
 			catch(SearchFailedException sfe){
 				Log.verboseLog("[ReSPA][SPA] failed. Exiting...");
@@ -256,11 +274,11 @@ public class ReSPA extends Search {
 
 
 
-	private void logRetainer(Node fnode) {
+	private void logRetainer(PathCondition pc) {
 
 		Log.verboseLog("[ReSPA][SPA] --> Success!");
 		OutputManager outputManager = new OutputManager();
-		outputManager.outputleaky(fnode.getPC());
+		outputManager.outputleaky(pc);
 
 		Log.verboseLog("LEAK: "+(OutputManager.rleak)+" = "+OutputManager.rleakPercent);
 		Log.verboseLog("Residue: "+(OutputManager.residue)+" = "+OutputManager.residuePercent);
@@ -283,14 +301,14 @@ public class ReSPA extends Search {
 		Log.verboseLog("Amount of dropped nodes (out of R): "+(outofR));
 
 		Log.verboseLog("Size of phi: "+(phi.size()));
-		Log.log(false,"new PC: "+(fnode.getPC())+"\n"+fnode.getPC().spc);
+		Log.log(false,"new PC: "+(pc)+"\n"+pc.spc);
 		Log.log(false,"\n\n ####################################################################################\n\n");
 
 
 		Log.save(Core.target_project+"/retainerlog.txt");
 
-		System.out.println(fnode.getPC());
-		System.out.println(fnode.getPC().spc);
+		System.out.println(pc);
+		System.out.println(pc.spc);
 
 	}
 
