@@ -206,7 +206,7 @@ public class ReSPA extends Search {
 					Core.clearSymb();
 					notifySearchStarted();
 
-					if((fnode = Retain(first, phi.get(phi.size()/2) , phi.getPath().getLast() ))==null){
+					if((fnode = SPA(first, phi.get(phi.size()/2) , phi.getPath().getLast() ))==null){
 
 						Log.verboseLog("[ReSPA][SPA][ERROR] --> null path condition \n\n\n");
 						done=true;
@@ -222,6 +222,8 @@ public class ReSPA extends Search {
 
 					}
 
+					
+					
 
 				}
 				while(cost > fnode.getLeak());
@@ -485,7 +487,7 @@ public class ReSPA extends Search {
 	private int num_notsuccess_hybrid=0;
 	private int num_failed=0;
 
-	private Node Retain(Node src, StateLabel complyPT,StateLabel defeatPT) throws SearchFailedException {
+	private Node SPA(Node src, StateLabel complyPT,StateLabel defeatPT) throws SearchFailedException {
 
 		//log stuff
 		num_hybrid++;
@@ -572,7 +574,7 @@ public class ReSPA extends Search {
 		Log.log(verbose, "[ReSPA][SPA] attempting a new destination node: "+complyPT);
 
 
-		return Retain(src, complyPT,defeatPT);// one more round
+		return SPA(src, complyPT,defeatPT);// one more round
 
 	}
 
