@@ -1,7 +1,9 @@
-package respa.search.miser.state;
+package respa.search.state;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 
 import respa.stateLabeling.StateLabel;
 
@@ -9,8 +11,7 @@ import respa.stateLabeling.StateLabel;
  * 
  * @author Joao Gouveia de Matos - GSD/INESC-ID
  * 
- * Use the FibonacciHeap implementation of Apache to implement
- * our priority queue. 
+ * Shuffle queue. Pop random elements from the queue. 
  * 
  * We keep a hashmap to keep track of the elements that need to be updated, because
  * FibonacciHeap does not have a 'contains' method. Plus, we want to replace the
@@ -23,17 +24,18 @@ import respa.stateLabeling.StateLabel;
  * 3) if n is no longer in the queue, n' is discarded
  * 
  */
-public class PQ_Remembering implements PQ {
+public class SQ_Remembering implements PQ {
 
-	private FibonacciHeap heap;
+
+	private ArrayList<StateLabel> list;
 
 	private HashMap<StateLabel,Node> contentmap;
 
 	private HashSet<StateLabel> visited;
 
-	public PQ_Remembering() {
+	public SQ_Remembering() {
 
-		this.heap = new FibonacciHeap();
+		list = new ArrayList<StateLabel>();
 		this.contentmap = new HashMap<StateLabel, Node>();
 		this.visited = new HashSet<StateLabel>();
 
@@ -42,10 +44,11 @@ public class PQ_Remembering implements PQ {
 
 	public Node pop() {
 
-		if(heap.size()==0)
+		if(list.size()==0)
 			return null;
 
-		StateLabel sl =(StateLabel) heap.popMin();
+
+		StateLabel sl = list.get( (new Random()).nextInt(list.size()));
 		Node pop = contentmap.get(sl);
 		contentmap.remove(sl);
 		return pop;
@@ -56,40 +59,32 @@ public class PQ_Remembering implements PQ {
 
 
 		if(contentmap.containsKey(hs.getLabel())){//not new but possibly cheaper 
-			if(contentmap.get(hs.getLabel()).getLeak()>hs.getLeak()){//update node priority
-				System.out.println("[REAP][PriorityQueue]-> Decrease Key!");
-				heap.decreaseKey(hs.getLabel(),hs.getLeak());
-				contentmap.put(hs.getLabel(),hs);
-				visited.add(hs.getLabel());
-			}
-		}
-		else if(!visited.contains(hs.getLabel())) {//new node
-			heap.add(hs.getLabel(), hs.getLeak());	
+			System.out.println("[REAP][PriorityQueue]-> Replace!");
 			contentmap.put(hs.getLabel(),hs);
 			visited.add(hs.getLabel());
 		}
-		//else: if a node was already popped, there is no way that the new version is cheaper
+		else if(!visited.contains(hs.getLabel())) {//new node
+			list.add(hs.getLabel());	
+			contentmap.put(hs.getLabel(),hs);
+			visited.add(hs.getLabel());
+		}
+		//else: if a node was already popped, discard this new version
 
 	}
-	
+
 	/**
 	 * Careful when using this. 
 	 * 
 	 * @param hs
 	 */
 	public void forcePush(Node hs) {
-		heap.add(hs.getLabel(), hs.getLeak());	
+		list.add(hs.getLabel());	
 		contentmap.put(hs.getLabel(),hs);
 		visited.add(hs.getLabel());
 	}
 
 	public Node peek() {
-		if(heap.size()==0)
-			return null;
-
-		StateLabel sl = (StateLabel)heap.peekMin();
-		Node pop = contentmap.get(sl);
-		return pop;
+			return null;//doesnt make sense in this context
 	}
 
 	public int size() {
@@ -99,7 +94,7 @@ public class PQ_Remembering implements PQ {
 	}
 
 	public boolean isEmpty() {
-		return heap.size()==0;
+		return list.size()==0;
 	}
 
 	public boolean contains(Node N) {
@@ -113,18 +108,8 @@ public class PQ_Remembering implements PQ {
 		return contentmap.containsKey(sl);
 
 	}
-	
-	public double getLeak(Node N) {
-		
-		return getLeak(N.getLabel());
-		
-	}
-	
-	public double getLeak(StateLabel sl) {
-		
-		return contentmap.get(sl).getLeak();
-		
-	}
+
+
 
 
 

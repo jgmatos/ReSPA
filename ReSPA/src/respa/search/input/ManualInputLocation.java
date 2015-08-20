@@ -1,4 +1,4 @@
-package respa.search.miser.input;
+package respa.search.input;
 
 import java.util.PriorityQueue;
 

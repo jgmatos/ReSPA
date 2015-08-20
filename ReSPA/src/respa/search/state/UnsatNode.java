@@ -1,4 +1,4 @@
-package respa.search.miser.state;
+package respa.search.state;
 
 import gov.nasa.jpf.jvm.JVM;
 

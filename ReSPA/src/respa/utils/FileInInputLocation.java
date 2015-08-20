@@ -9,9 +9,9 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 import respa.main.Core;
-import respa.search.miser.input.queuedInput;
-import respa.search.miser.input.queuedInputInt;
-import respa.search.miser.input.queuedInputString;
+import respa.search.input.queuedInput;
+import respa.search.input.queuedInputInt;
+import respa.search.input.queuedInputString;
 import respa.stateLabeling.Location;
 
 public class FileInInputLocation extends InputLocation{

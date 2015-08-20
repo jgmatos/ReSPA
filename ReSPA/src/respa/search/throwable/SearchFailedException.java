@@ -1,4 +1,4 @@
-package respa.search.miser.throwable;
+package respa.search.throwable;
 
 public class SearchFailedException extends Exception{
 

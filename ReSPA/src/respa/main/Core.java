@@ -17,7 +17,7 @@ import respa.input.InputBuffer;
 import respa.input.InputVariable;
 import respa.main.Core;
 import respa.path.Path;
-import respa.search.miser.input.queuedInput;
+import respa.search.input.queuedInput;
 import respa.stateLabeling.Location;
 import respa.stateLabeling.StateLabel;
 import respa.utils.FileInInputLocation;

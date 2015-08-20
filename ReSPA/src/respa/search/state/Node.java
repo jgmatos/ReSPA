@@ -1,5 +1,5 @@
 
-package respa.search.miser.state;
+package respa.search.state;
 
 
 import java.util.ArrayList;

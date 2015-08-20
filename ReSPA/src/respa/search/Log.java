@@ -1,4 +1,4 @@
-package respa.search.miser;
+package respa.search;
 
 import java.io.File;
 import java.io.FileWriter;

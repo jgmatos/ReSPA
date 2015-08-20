@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
 
-import respa.search.miser.input.ManualInputLocation;
-import respa.search.miser.input.queuedInputString;
+import respa.search.input.ManualInputLocation;
+import respa.search.input.queuedInputString;
 import respa.stateLabeling.Location;
 import respa.stateLabeling.Trace;
 import respa.stateLabeling.VerboseMile;

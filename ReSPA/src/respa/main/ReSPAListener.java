@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
 
-import respa.search.miser.input.queuedInputInt;
-import respa.search.miser.input.queuedInputString;
-import respa.search.miser.ReSPA;
+import respa.search.ReSPA;
+import respa.search.input.queuedInputInt;
+import respa.search.input.queuedInputString;
 import respa.stateLabeling.Location;
 import respa.stateLabeling.VerboseMile;
 import respa.utils.ClassFinder;
