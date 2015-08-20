@@ -1,0 +1,35 @@
+Reporting Errors with Alternative Paths (REAP)
+
+Author: Jo‹o Gouveia de Matos
+		Distributed Systems Group (GSD)
+		INESC-ID / Lisbon, Portugal
+
+email:  jmatos@gsd.inesc-id.pt
+
+IMPORTANT NOTE: This work is yet to be published. Awaiting acceptance
+
+
+
+
+There are some features of REAP that were not uploaded yet, and some others are not yet implemented. This work should
+be complete by Feb 2013, however many features are already available.
+
+Not implemented (yet) features:
+
+ - Xml files are already supported, but others like html, csv, many others, will be supported as well
+ - Pure entropy leak estimation is not yet possible
+ - MultiPathPrivacy (MPP) work is not implemented yet. 
+
+Implemented but not yet uploaded: 
+
+ - verbose mode is being tested
+ - logging is disabled
+ - Some input detection features, like command line input, need some changes
+ - In the state labeling, the loop labeling needs some changes. This means that, at this time, REAP does not distinguish
+ 		between milestones within different iterations of loops. It will be uploaded soon. 
+ 		
+ 
+ 
+ It is important to understand that REAP has many properties that depend on the application under test. These values 
+ need to be specified a priori in the target_application.properties file, and may differ a lot. REAP may also need 
+ additional implementation to support other type of applications.
