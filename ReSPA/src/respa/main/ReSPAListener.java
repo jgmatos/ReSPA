@@ -6,10 +6,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
 
+import respa.search.Log;
+import respa.search.LogReSPA;
 import respa.search.ReSPA;
 import respa.search.input.queuedInputInt;
 import respa.search.input.queuedInputString;
+import respa.search.state.Node;
+import respa.search.state.PQ;
 import respa.stateLabeling.Location;
+import respa.stateLabeling.StateLabel;
 import respa.stateLabeling.VerboseMile;
 import respa.utils.ClassFinder;
 import respa.utils.ConstraintClean;
@@ -25,6 +30,7 @@ import gov.nasa.jpf.jvm.bytecode.Instruction;
 import gov.nasa.jpf.report.ConsolePublisher;
 import gov.nasa.jpf.search.Search;
 import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
+import gov.nasa.jpf.symbc.numeric.PathCondition;
 
 
 
@@ -35,7 +41,7 @@ import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
  * Search listener
  *
  */
-public class ReSPAListener extends PropertyListenerAdapter{
+public class ReSPAListener extends RespaPropertyListenerAdapter{
 
 
 
@@ -71,21 +77,21 @@ public class ReSPAListener extends PropertyListenerAdapter{
 	//////////////////////	
 	private Search thisSearch;
 
-	
-	
-	
-	
+
+
+
+
 	//crash point
 	private VerboseMile crashMile = null;
-	
-	
-	
-	
-	
 
 
 
-	
+
+
+
+
+
+
 
 
 
@@ -107,7 +113,7 @@ public class ReSPAListener extends PropertyListenerAdapter{
 
 
 
- 
+
 
 
 
@@ -271,7 +277,7 @@ public class ReSPAListener extends PropertyListenerAdapter{
 			if(SystemOut.print_loading)
 				System.out.println("[REAP][ExploreListener] --> loading AWT files...");
 
-			
+
 			if(SystemOut.print_loading)
 				System.out.println("[REAP][ExploreListener] --> done");
 
@@ -292,7 +298,7 @@ public class ReSPAListener extends PropertyListenerAdapter{
 
 	private boolean loadProperties() {
 
-		
+
 
 		return true;
 	}
@@ -301,6 +307,7 @@ public class ReSPAListener extends PropertyListenerAdapter{
 
 	public void searchStarted(Search search) {
 
+		startts =startItTs= System.currentTimeMillis();
 
 		this.thisSearch = search;
 
@@ -770,6 +777,280 @@ public class ReSPAListener extends PropertyListenerAdapter{
 		}
 
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/**
+	 * ReSPA Listening
+	 */
+
+
+	private int num_hybrid=0;
+	private int num_success_hybrid=0;
+	private int num_notsuccess_hybrid=0;
+	private int num_failed=0;
+	private int num_gb=0;
+	private int num_bd=0;
+	private int sent_gb=0;
+	private int popped=0;
+	private int updated = 0;
+	private int pushed = 0;
+	private int outofR=0;
+	private long startts;
+	private long startItTs;
+	private void clearLogvars() {
+		num_hybrid=0;
+		num_success_hybrid=0;
+		num_notsuccess_hybrid=0;
+		num_failed=0;
+
+		num_gb=0;
+		num_bd=0;
+		sent_gb=0;
+
+		popped=0;
+		updated=0;
+		pushed=0;
+		outofR=0;
+	}
+
+
+	@Override
+	public void respa_error(String message) {
+
+		LogReSPA.verboseLog(message);
+		LogReSPA.save(LogReSPA.outDir);
+		System.exit(0);
+
+	}
+
+	@Override
+	public void respa_phiget() {
+
+		if(LogReSPA.logPhiGet)
+			LogReSPA.verboseLog("[ReSPA][Comply] --> Attempting to obtain phi");
+
+	}
+
+	@Override
+	public void respa_phigetEnd(PathCondition PC) {
+
+		LogReSPA.verboseLog("[ReSPA][SPA] --> Success!");
+		OutputManager outputManager = new OutputManager();
+		outputManager.outputleaky(PC);
+
+		LogReSPA.verboseLog("LEAK: "+(OutputManager.rleak)+" = "+OutputManager.rleakPercent);
+		LogReSPA.verboseLog("Residue: "+(OutputManager.residue)+" = "+OutputManager.residuePercent);
+		LogReSPA.verboseLog("Elapsed time: "+(System.currentTimeMillis()-this.startts));
+		LogReSPA.verboseLog("Memory: "+(Runtime.getRuntime().totalMemory()));
+		LogReSPA.log(false,"new PC: "+(PC)+"\n"+PC.spc);
+		LogReSPA.log(false,"\n\n ####################################################################################\n\n");
+
+	}
+
+	@Override
+	public void respa_startIteration(int n) {
+
+		clearLogvars();
+		if(LogReSPA.logStartIteration)
+			LogReSPA.verboseLog("\n\n\n\n\n\n\n Iteration: "+n+"\n\n\n\n\n\n\n ");
+		startItTs=System.currentTimeMillis();
+
+	}
+
+	
+	
+	
+	
+	@Override
+	public void respa_endIteration(int n, PathCondition PC) {}
+
+	
+	
+	
+	
+	@Override
+	public void respa_maxIterations(int n, PathCondition PC) {
+
+		LogReSPA.verboseLog("[ReSPA][SPA] --> reached the maximum number of allowed iterations. Returning a random PC:"+PC+" \n\n\n");
+
+	}
+
+	@Override
+	public void respa_finished(PathCondition pc) {
+
+		OutputManager outputManager = new OutputManager();
+		outputManager.outputleaky(pc);
+
+		LogReSPA.verboseLog("LEAK: "+(OutputManager.rleak)+" = "+OutputManager.rleakPercent);
+		LogReSPA.verboseLog("Residue: "+(OutputManager.residue)+" = "+OutputManager.residuePercent);
+		LogReSPA.verboseLog("Elapsed time: "+(System.currentTimeMillis()-this.startts));
+		LogReSPA.verboseLog("Elapsed time of this IT: "+(System.currentTimeMillis()-this.startItTs));
+		LogReSPA.verboseLog("Memory: "+(Runtime.getRuntime().totalMemory()));
+
+		LogReSPA.verboseLog("Amount of HybridDijkstra performed: "+(num_hybrid));
+		LogReSPA.verboseLog("Amount of HybridDijkstra successful: "+(num_success_hybrid));
+		LogReSPA.verboseLog("Amount of HybridDijkstra unsuccessful: "+(num_notsuccess_hybrid));
+		LogReSPA.verboseLog("Amount of HybridDijkstra failed: "+(num_failed));
+
+		LogReSPA.verboseLog("Amount of nodes recovered from GB: "+(num_gb));
+		LogReSPA.verboseLog("Amount of new BD invocations (not recovered from GB): "+(num_bd));
+		LogReSPA.verboseLog("Amount of nodes sent to GB: "+(sent_gb));
+
+		LogReSPA.verboseLog("Amount of nodes popped from fheap: "+(popped));
+		LogReSPA.verboseLog("Amount of nodes updated in fheap: "+(updated));
+		LogReSPA.verboseLog("Amount of nodes pushed into fheap: "+(pushed));
+		LogReSPA.verboseLog("Amount of dropped nodes (out of R): "+(outofR));
+
+		//LogReSPA.verboseLog("Size of phi: "+(phi.size()));
+		LogReSPA.log(false,"new PC: "+(pc)+"\n"+pc.spc);
+		LogReSPA.log(false,"\n\n ####################################################################################\n\n");
+
+
+		LogReSPA.save(Core.target_project+"/retainerlog.txt");
+
+		System.out.println(pc);
+		System.out.println(pc.spc);
+
+
+	}
+
+	@Override
+	public void respa_stepForward(Node n) {
+
+		LogReSPA.verboseLog("[ReSPA][SPA][BoundedDijkstra] step forward "+n.getLabel()+" - "+n.getLabel().getConstraint());
+
+
+	}
+
+	@Override
+	public void respa_reproduced(Node nx, StateLabel nm) {
+
+		num_success_hybrid++;
+		LogReSPA.verboseLog("[ReSPA][SPA] F was reproduced: BoundedDijkstra("+
+				nx.getLabel()+"->"+nm+") + phiComply. Successful: "+num_success_hybrid+
+				" out of "+num_hybrid);
+
+	}
+
+	@Override
+	public void respa_notreproduced(Node nx, StateLabel nm) {
+
+		num_notsuccess_hybrid++;
+		LogReSPA.verboseLog("[ReSPA][SPA] F was *not* reproduced: BoundedDijkstra("+
+				nx.getLabel()+"-"+nx.getLabel().getConstraint()+"->"+nm+"-"+nm.getConstraint()+") + phiComply. Unsuccessful: "+num_notsuccess_hybrid+
+				" out of "+num_hybrid);
+
+
+	}
+
+	@Override
+	public void respa_suspect(Node suspect) {
+
+
+		num_failed++;
+		LogReSPA.verboseLog("[ReSPA][SPA] we failed to bypass this node "+suspect.getLabel()+
+				"; Failed: "+num_failed);
+
+
+	}
+
+	
+	
+	
+	
+	@Override
+	public void respa_newNm(Node nm) {}
+	
+	
+	
+	
+
+	@Override
+	public void respa_gbRecovered(Node nx, HashMap<StateLabel, Node> GB) {
+
+		
+		num_gb++;
+		LogReSPA.verboseLog("[ReSPA][SPA][HybridDijkstra] Recovering node from garbage bin: "+nx.getLabel()+
+				". Amount of nodes recoverd from gb: "+num_gb);
+
+	}
+
+	@Override
+	public void respa_gbAdded(Node nx, HashMap<StateLabel, Node> GB) {
+
+		sent_gb++;
+		LogReSPA.verboseLog("[ReSPA][SPA][BoundedDijkstra] Sent node to garbage bin: "+nx.getLabel()+
+				". Amount of nodes sent: "+sent_gb);
+
+	}
+
+	@Override
+	public void respa_dijkstra(Node nx, StateLabel nm) {
+
+		num_bd++;
+		LogReSPA.verboseLog("[ReSPA][SPA][HybridDijkstra] Performing BoundedDijkstra starting from: "+
+				nx.getLabel()+" until "+nm+". Amount of BD procedures: "+num_bd);
+
+	}
+
+	@Override
+	public void respa_pushNode(Node n,PQ pq) {
+		
+		pushed++;
+		Log.log(false, "[ReSPA][SPA][BoundedDijkstra] pushed node: "+n.getLabel()+" queue size: "+pq.size()+
+				". Amount of pushed: "+pushed);
+		
+	}
+
+	@Override
+	public void respa_popNode(Node n,PQ pq) {
+		
+		
+		popped++;
+		Log.log(false, "[ReSPA][SPA][BoundedDijkstra] popped node: "+n.getLabel()+" queue size: "+pq.size()+
+				". Popped: "+popped);
+
+		
+		
+	}
+
+	@Override
+	public void respa_updateNode(Node n,PQ pq) {
+		
+		//////////////////////log stuff
+		updated++;
+		Log.log(false, "[ReSPA][SPA][BoundedDijkstra] updated node: "+n.getLabel()+" queue size: "+pq.size()+
+				"Amount of updated nods: "+updated);
+		///////////////////////////////
+		
+	}
+
+	@Override
+	public void respa_outOfR(int r, Node n) {
+		
+		//////////////////////log stuff
+		outofR++;
+		Log.log(false, "[ReSPA][SPA][BoundedDijkstra] out of range R: "+n.getLabel()+". Amount: "+outofR);
+		///////////////////////////////
+		
+	}
+
+
+
+
+
 
 
 

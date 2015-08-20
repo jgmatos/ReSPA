@@ -57,7 +57,7 @@ public class PQ_Remembering implements PQ {
 
 		if(contentmap.containsKey(hs.getLabel())){//not new but possibly cheaper 
 			if(contentmap.get(hs.getLabel()).getLeak()>hs.getLeak()){//update node priority
-				System.out.println("[REAP][PriorityQueue]-> Decrease Key!");
+				//System.out.println("[REAP][PriorityQueue]-> Decrease Key!");
 				heap.decreaseKey(hs.getLabel(),hs.getLeak());
 				contentmap.put(hs.getLabel(),hs);
 				visited.add(hs.getLabel());

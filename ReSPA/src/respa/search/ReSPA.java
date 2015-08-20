@@ -3,6 +3,7 @@ package respa.search;
 import gov.nasa.jpf.Config;
 import gov.nasa.jpf.jvm.JVM;
 import gov.nasa.jpf.search.Search;
+import gov.nasa.jpf.search.SearchListener;
 import gov.nasa.jpf.symbc.numeric.PCChoiceGenerator;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 import gov.nasa.jpf.symbc.string.StringSymbolic;
@@ -69,10 +70,6 @@ public class ReSPA extends Search {
 
 
 
-	//////log stuff
-	private long startts;
-	private long startItTs;
-	//////
 
 
 
@@ -111,8 +108,8 @@ public class ReSPA extends Search {
 		PQ = new PQ_Remembering();
 		GB = new HashMap<StateLabel, Node>();
 		Core.load();
+		setListeners();
 
-		
 
 
 	}
@@ -152,7 +149,7 @@ public class ReSPA extends Search {
 
 		verbose = SystemOut.debug;
 		R = Core.radius;
-		startts =startItTs= System.currentTimeMillis();
+
 
 		Node first = getFirstState();
 		currentParent = first;
@@ -166,26 +163,26 @@ public class ReSPA extends Search {
 			restoreState(first);
 
 
-
 			try {
-				Log.verboseLog("[ReSPA][Comply] --> Attempting to obtain phi");
+				notifyPhigetStarted();
+
 				Node fnode = getPHI(first);
-				logPhiget(fnode);
+				notifyPhigetEnded(fnode.getPC());
 
 				ArrayList<PathCondition> pcs = new ArrayList<PathCondition>();
 				pcs.add(fnode.getPC());
-				
+
 				it = 0;
 				double cost;
 				do{
-					startItTs=System.currentTimeMillis();
+					notifyStartIteration(it);
 					it++;
 					currentParent=first;
 					currentNode=first;
 					cost = fnode.getLeak();
 
 
-					System.out.println("--------------------------");
+					//			System.out.println("--------------------------");
 					StateLabel nodeid = fnode.getLabel();
 					LinkedList<StateLabel> dummy = new LinkedList<StateLabel>();
 					do{
@@ -196,15 +193,14 @@ public class ReSPA extends Search {
 					phi.clear();
 					for(StateLabel sl:dummy){
 						phi.appendState(sl);
-						System.out.println(sl+" - "+sl.getConstraint());
+						//System.out.println(sl+" - "+sl.getConstraint());
 					}
-					System.out.println("-------------------------- phi has size "+phi.size());
+					//					System.out.println("-------------------------- phi has size "+phi.size());
 
 
 					gettingPhi=false;
 					PQ = new PQ_Remembering();//clear
 					GB.clear();//clear
-					clearLogvars();
 
 					restoreState(first);
 					Core.clearSymb();
@@ -212,7 +208,7 @@ public class ReSPA extends Search {
 
 					if((fnode = SPA(first, phi.get(phi.size()/2) , phi.getPath().getLast() ))==null){
 
-						Log.verboseLog("[ReSPA][SPA][ERROR] --> null path condition \n\n\n");
+						notifyReSPAerror("[ReSPA][SPA][ERROR] --> null path condition \n\n\n");
 						done=true;
 						Log.save(Core.target_project+"/retainerlog.txt");
 						throw new SearchFailedException();
@@ -220,37 +216,39 @@ public class ReSPA extends Search {
 					}
 					else {
 
-						Log.verboseLog("\n\n\n\n\n\n\n Iteration: "+it);
-						
+						notifyStartIteration(it);
 						pcs.add(fnode.getPC());
-						
+
 
 					}
 
-					
-					
+
+
 
 				}
 				while(cost > fnode.getLeak() && Core.maxAttempts <= pcs.size());
 
-				
-				
+
+				PathCondition finalPC;
 				if(Core.maxAttempts <= pcs.size()){
-					Log.verboseLog("[ReSPA][SPA] --> reached the maximum number of allowed iterations. Returning a random PC... \n\n\n");
-					logRetainer(pcs.get((new Random()).nextInt(pcs.size())));
+
+					finalPC = pcs.get((new Random()).nextInt(pcs.size()));
+					notifyMaxIterations(it, finalPC);
+
 				}
 				else{
-					logRetainer(pcs.get(pcs.size()-1));
-					Log.verboseLog("\n\n\n\n\n\n\n ");
-				}
-					
 
-				
+					finalPC =pcs.get(pcs.size()-1);
+					//TODO: a notify for this scenario
+
+				}
+				notifyFinished(finalPC);
+
+
 			}
 			catch(SearchFailedException sfe){
-				Log.verboseLog("[ReSPA][SPA] failed. Exiting...");
-				Log.save(Core.target_project+"/retainerlog.txt");
-				System.exit(0);
+				notifyReSPAerror("[ReSPA][SPA][ERROR] "+sfe.getMessage());
+
 			}
 
 
@@ -274,74 +272,9 @@ public class ReSPA extends Search {
 
 
 
-	private void logRetainer(PathCondition pc) {
-
-		Log.verboseLog("[ReSPA][SPA] --> Success!");
-		OutputManager outputManager = new OutputManager();
-		outputManager.outputleaky(pc);
-
-		Log.verboseLog("LEAK: "+(OutputManager.rleak)+" = "+OutputManager.rleakPercent);
-		Log.verboseLog("Residue: "+(OutputManager.residue)+" = "+OutputManager.residuePercent);
-		Log.verboseLog("Elapsed time: "+(System.currentTimeMillis()-this.startts));
-		Log.verboseLog("Elapsed time of this IT: "+(System.currentTimeMillis()-this.startItTs));
-		Log.verboseLog("Memory: "+(Runtime.getRuntime().totalMemory()));
-
-		Log.verboseLog("Amount of HybridDijkstra performed: "+(num_hybrid));
-		Log.verboseLog("Amount of HybridDijkstra successful: "+(num_success_hybrid));
-		Log.verboseLog("Amount of HybridDijkstra unsuccessful: "+(num_notsuccess_hybrid));
-		Log.verboseLog("Amount of HybridDijkstra failed: "+(num_failed));
-
-		Log.verboseLog("Amount of nodes recovered from GB: "+(num_gb));
-		Log.verboseLog("Amount of new BD invocations (not recovered from GB): "+(num_bd));
-		Log.verboseLog("Amount of nodes sent to GB: "+(sent_gb));
-
-		Log.verboseLog("Amount of nodes popped from fheap: "+(popped));
-		Log.verboseLog("Amount of nodes updated in fheap: "+(updated));
-		Log.verboseLog("Amount of nodes pushed into fheap: "+(pushed));
-		Log.verboseLog("Amount of dropped nodes (out of R): "+(outofR));
-
-		Log.verboseLog("Size of phi: "+(phi.size()));
-		Log.log(false,"new PC: "+(pc)+"\n"+pc.spc);
-		Log.log(false,"\n\n ####################################################################################\n\n");
 
 
-		Log.save(Core.target_project+"/retainerlog.txt");
 
-		System.out.println(pc);
-		System.out.println(pc.spc);
-
-	}
-
-	private void clearLogvars() {
-		num_hybrid=0;
-		num_success_hybrid=0;
-		num_notsuccess_hybrid=0;
-		num_failed=0;
-
-		num_gb=0;
-		num_bd=0;
-		sent_gb=0;
-
-		popped=0;
-		updated=0;
-		pushed=0;
-		outofR=0;
-	}
-
-	private void logPhiget(Node fnode) {
-
-		Log.verboseLog("[ReSPA][SPA] --> Success!");
-		OutputManager outputManager = new OutputManager();
-		outputManager.outputleaky(fnode.getPC());
-
-		Log.verboseLog("LEAK: "+(OutputManager.rleak)+" = "+OutputManager.rleakPercent);
-		Log.verboseLog("Residue: "+(OutputManager.residue)+" = "+OutputManager.residuePercent);
-		Log.verboseLog("Elapsed time: "+(System.currentTimeMillis()-this.startts));
-		Log.verboseLog("Memory: "+(Runtime.getRuntime().totalMemory()));
-		Log.log(false,"new PC: "+(fnode.getPC())+"\n"+fnode.getPC().spc);
-		Log.log(false,"\n\n ####################################################################################\n\n");
-
-	}
 
 
 
@@ -500,16 +433,11 @@ public class ReSPA extends Search {
 
 
 
-	private int num_hybrid=0;
-	private int num_success_hybrid=0;
-	private int num_notsuccess_hybrid=0;
-	private int num_failed=0;
+
 
 	private Node SPA(Node src, StateLabel complyPT,StateLabel defeatPT) throws SearchFailedException {
 
-		//log stuff
-		num_hybrid++;
-		//
+
 
 
 
@@ -517,7 +445,7 @@ public class ReSPA extends Search {
 
 		Node srcClone = (Node)src.clone();
 
-		Node newsrc = HybridDijkstra(srcClone, complyPT);
+		Node newsrc = Hybrid(srcClone, complyPT);
 
 
 
@@ -530,24 +458,11 @@ public class ReSPA extends Search {
 
 
 		if(newsrc.getLabel().equals(src.getLabel())){ // F was not reproduced
-
-			//////////////////////log stuff
-			num_notsuccess_hybrid++;
-			Log.log(verbose, "[ReSPA][SPA] F was *not* reproduced: BoundedDijkstra("+
-					src.getLabel()+"-"+src.getLabel().getConstraint()+"->"+complyPT+"-"+complyPT.getConstraint()+") + phiComply. Unsuccessful: "+num_notsuccess_hybrid+
-					" out of "+num_hybrid);
-			////////////////////////////////
-
+			notifyNotReproduced(srcClone, complyPT);
 			defeatPT = complyPT;
-
 		}
-		else {
-			//////////////////////log stuff
-			num_success_hybrid++;
-			Log.log(verbose, "[ReSPA][SPA] F was reproduced: BoundedDijkstra("+
-					src.getLabel()+"->"+complyPT+") + phiComply. Successful: "+num_success_hybrid+
-					" out of "+num_hybrid);
-			////////////////////////////////
+		else {// F was reproduced
+			notifyReproduced(srcClone, complyPT);
 			src = newsrc;
 		}
 
@@ -555,16 +470,11 @@ public class ReSPA extends Search {
 		if(newsrc.getLabel().equals(phi.get(phi.indexOf(defeatPT)-1))){
 
 
-			//////////////////////log stuff
-			num_failed++;
-			Log.log(verbose, "[ReSPA][SPA] we failed to bypass this node "+src.getLabel()+
-					"; Failed: "+num_failed);
-			////////////////////////////////
-
+			notifySuspect(src);
 
 			defeatPT = phi.getPath().getLast();//reset
 
-		
+
 
 			restoreState(src);notifyStateAdvanced();//notifyStateRestored();
 			currentParent = src;
@@ -586,8 +496,8 @@ public class ReSPA extends Search {
 		}
 		catch(Exception e){
 
-				Log.log(true, "[ReSPA][SPA] bug ");
-			
+			Log.log(true, "[ReSPA][SPA] bug ");
+
 		}
 		Log.log(verbose, "[ReSPA][SPA] attempting a new destination node: "+complyPT);
 
@@ -598,10 +508,9 @@ public class ReSPA extends Search {
 
 
 
-	private int num_gb=0;
-	private int num_bd=0;
 
-	private Node HybridDijkstra(Node src, StateLabel dstID) throws SearchFailedException {
+
+	private Node Hybrid(Node src, StateLabel dstID) throws SearchFailedException {
 
 		Log.log(verbose, "[ReSPA][SPA][HybridDijkstra] Performing hybrid starting from: "+src.getLabel());
 
@@ -610,25 +519,16 @@ public class ReSPA extends Search {
 		Node Ns;
 		if(GB.containsKey(dstID)){
 
-			//////////////////////log stuff
-			num_gb++;
-			Log.log(verbose, "[ReSPA][SPA][HybridDijkstra] Recovering node from garbage bin: "+dstID+
-					". Amount of nodes recoverd from gb: "+num_gb);
-			///////////////////////////////
 
 			Ns = GB.get(dstID);
 			restoreState(Ns);notifyStateAdvanced();
-
+			notifyGBrecovered(Ns);
 
 
 		}
 		else{
 
-			//////////////////////log stuff
-			num_bd++;
-			Log.log(verbose, "[ReSPA][SPA][HybridDijkstra] Performing BoundedDijkstra starting from: "+
-					src.getLabel()+" until "+dstID+". Amount of BD procedures: "+num_bd);
-			///////////////////////////////
+			notifyDijkstra(src, dstID);
 
 			restoreState(src);notifyStateAdvanced();
 
@@ -642,7 +542,9 @@ public class ReSPA extends Search {
 			}
 		}
 
-		Log.log(verbose, "[ReSPA][SPA][HybridDijkstra] Performing phiComply starting from: "+Ns.getLabel());
+		//		Log.log(verbose, "[ReSPA][SPA][HybridDijkstra] Performing phiComply starting from: "+Ns.getLabel());
+		//TODO: notify for comply
+
 
 		Node backupNs = (Node)Ns.clone();
 		Node Nd = phiComply(Ns);
@@ -666,13 +568,12 @@ public class ReSPA extends Search {
 
 
 
-	private int sent_gb=0;
-	private int popped=0;
+
 	private Node BoundedDijkstra(Node next,StateLabel destID) throws SearchFailedException {
 
 
-		System.out.println("[ReSPA][SPA][BoundedDijkstra] step forward "+next.getLabel()+" - "+next.getLabel().getConstraint());
-
+		notifyStepForward(next);
+		
 
 		if(next.getLabel().equals(destID))
 			return next;
@@ -681,11 +582,7 @@ public class ReSPA extends Search {
 				!GB.containsKey(next.getLabel())){
 			GB.put(next.getLabel(),next);
 
-			//////////////////////log stuff
-			sent_gb++;
-			Log.log(verbose, "[ReSPA][SPA][BoundedDijkstra] Sent node to garbage bin: "+next.getLabel()+
-					". Amount of nodes sent: "+sent_gb+" ;; the queue has size of: "+PQ.size());
-			//////////////////////////////
+			notifyGBadded(next);
 
 		}
 		currentParent=next;
@@ -706,19 +603,13 @@ public class ReSPA extends Search {
 		notifyStateRestored();
 		notifyStateAdvanced();
 
-		//////////////////////log stuff
-		popped++;
-		Log.log(false, "[ReSPA][SPA][BoundedDijkstra] popped node: "+next.getLabel()+" queue size: "+PQ.size()+
-				". Popped: "+popped);
-		///////////////////////////////
-
+		notifyPoppedNode(next);
+		
 		return BoundedDijkstra(next, destID);
 
 	}
 
-	private int updated = 0;
-	private int pushed = 0;
-	private int outofR=0;
+
 
 	private void queue(Node N) {
 
@@ -742,30 +633,21 @@ public class ReSPA extends Search {
 						actually necessary. However it keeps the code
 						coerent with the pseudocode.*/
 
-					//////////////////////log stuff
-					updated++;
-					Log.log(false, "[ReSPA][SPA][BoundedDijkstra] updated node: "+N.getLabel()+" queue size: "+PQ.size()+
-							"Amount of updated nods: "+updated);
-					///////////////////////////////
 
+					notifyUpdatedNode(N);
 				}
 
 			}
 			else{
 				PQ.push(N);
 
-				//////////////////////log stuff
-				pushed++;
-				Log.log(false, "[ReSPA][SPA][BoundedDijkstra] pushed node: "+N.getLabel()+" queue size: "+PQ.size()+
-						". Amount of pushed: "+pushed);
-				///////////////////////////////
+
+				notifyPushedNode(N);
 			}
 		}
 		else{
-			//////////////////////log stuff
-			outofR++;
-			Log.log(false, "[ReSPA][SPA][BoundedDijkstra] out of range R: "+N.getLabel()+". Amount: "+outofR);
-			///////////////////////////////
+
+			notifyOutOfR(R, N);
 		}
 
 	}
@@ -861,51 +743,51 @@ public class ReSPA extends Search {
 
 				notifyStateAdvanced();
 
-			{
+				{
 
-				if (!isEndState() && !isIgnoredState()) {
+					if (!isEndState() && !isIgnoredState()) {
 
-					if (isNewState()) {
+						if (isNewState()) {
 
 
-						Node newHState = getCurrentState();            
-						if (newHState != null) { 
+							Node newHState = getCurrentState();            
+							if (newHState != null) { 
 
-							childStates.add(newHState);
-							notifyStateStored();
+								childStates.add(newHState);
+								notifyStateStored();
 
+							}
 						}
+
+					}
+					else if(isEndState()&&!ReSPAListener.fInducing.isEmpty()) {
+						//TODO: merge elseif with if
+						if (isNewState()) {
+
+
+							Node newHState = getCurrentState();            
+							if (newHState != null) { 
+
+								childStates.add(newHState);
+								notifyStateStored();
+
+							}
+						}
+
+
+					}
+					else{
+						System.out.println("\n\n Unsat Node: "+isEndState()+" , "+isIgnoredState()+";; "+/*n.getLabel()+*/"\n\n");
+
 					}
 
-				}
-				else if(isEndState()&&!ReSPAListener.fInducing.isEmpty()) {
-					//TODO: merge elseif with if
-					if (isNewState()) {
-
-
-						Node newHState = getCurrentState();            
-						if (newHState != null) { 
-
-							childStates.add(newHState);
-							notifyStateStored();
-
-						}
-					}
-
-
-				}
-				else{
-					System.out.println("\n\n Unsat Node: "+isEndState()+" , "+isIgnoredState()+";; "+/*n.getLabel()+*/"\n\n");
 
 				}
 
+				if(success)
+					return childStates;
 
-			}
-
-			if(success)
-				return childStates;
-
-			backtrackToParent();
+				backtrackToParent();
 			}
 
 		}
@@ -992,7 +874,7 @@ public class ReSPA extends Search {
 	private Node getFirstState (){
 
 		StateLabel statelabel = this.labeling.getCurrentState();
-		
+
 		CollectedLeak cc = new CollectedLeak();
 		if(!(vm.getChoiceGenerator() instanceof PCChoiceGenerator))
 			return new Node(vm,statelabel,true,cc,0);
@@ -1030,7 +912,7 @@ public class ReSPA extends Search {
 			ReSPAListener.fInducing.clear();
 			ReSPAListener.f=false;
 		}
-		
+
 
 	}
 
@@ -1163,9 +1045,164 @@ public class ReSPA extends Search {
 
 
 
+	/**
+	 * ReSPA Listening
+	 */
 
 
 
+
+	private ArrayList<ReSPAListener> respalisteners;
+
+
+	private void setListeners() {
+
+		respalisteners = new ArrayList<ReSPAListener>();
+		for(SearchListener sl: super.listeners)
+			if(sl instanceof ReSPAListener)
+				respalisteners.add((ReSPAListener)sl);
+
+	}
+
+
+
+	private void notifyReSPAerror(String errorMessage) {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_error(errorMessage);
+
+	}
+
+	private void notifyPhigetStarted() {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_phiget();
+
+	}
+
+	private void notifyPhigetEnded(PathCondition PC) {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_phigetEnd(PC);
+
+	}
+
+	private void notifyStartIteration(int n) {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_startIteration(n);
+
+	}
+
+
+	private void notifyEndIteration(int n, PathCondition pc) {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_endIteration(n,pc);
+
+	}
+
+	private void notifyMaxIterations(int n, PathCondition pc) {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_maxIterations(n,pc);
+
+	}
+
+
+	private void notifyStepForward(Node n) {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_stepForward(n);
+
+
+	}
+
+
+	private void notifyReproduced(Node nx, StateLabel nm) {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_reproduced(nx,nm);
+
+	}
+
+	private void notifyNotReproduced(Node nx, StateLabel nm) {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_notreproduced(nx,nm);
+
+
+	}
+
+	private void notifySuspect(Node suspect) {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_suspect(suspect);
+
+
+	}
+
+	private void notifyNewNm(Node Nm) {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_newNm(Nm);
+
+	}
+
+	private void notifyGBrecovered(Node n) {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_gbRecovered(n,GB);
+
+	}
+
+	private void notifyGBadded(Node n) {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_gbAdded(n,GB);
+
+
+	}
+
+	private void notifyDijkstra(Node nx, StateLabel nm) {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_notreproduced(nx,nm);
+
+	}
+
+	private void notifyPushedNode(Node n) {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_pushNode(n,PQ);
+
+	}
+
+	private void notifyPoppedNode(Node n) {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_popNode(n,PQ);
+
+	}
+
+	private void notifyUpdatedNode(Node n) {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_updateNode(n,PQ);
+
+	}
+
+	private void notifyOutOfR(int r,Node n) {
+
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_outOfR(r,n);
+
+	}
+
+	private void notifyFinished(PathCondition pc) {
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_finished(pc);
+	}
 
 
 
