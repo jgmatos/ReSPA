@@ -60,7 +60,7 @@ public class MiserListener extends PropertyListenerAdapter{
 	//if we want to identify input locations manually
 	//provide locations in a file
 	private HashMap <Location,InputLocation> inputLocationsSet = new HashMap<Location,InputLocation>();
-	private String inputLocationsDir = "";
+
 
 
 
@@ -71,15 +71,21 @@ public class MiserListener extends PropertyListenerAdapter{
 	//////////////////////	
 	private Search thisSearch;
 
+	
+	
+	
+	
 	//crash point
 	private VerboseMile crashMile = null;
-	private String crashMileFile;
+	
+	
+	
+	
+	
 
-	//stop REAP at any crash even if it is not the crash in the original execution
-	private boolean stop_any_crash = false;
 
 
-
+	
 
 
 
@@ -101,6 +107,7 @@ public class MiserListener extends PropertyListenerAdapter{
 
 
 
+ 
 
 
 
@@ -111,16 +118,6 @@ public class MiserListener extends PropertyListenerAdapter{
 
 
 
-
-
-
-
-	/////////////////////////////
-	/////// PROPERTIES FILE
-	////////////////////////////
-	private String sourceNamesFile;
-
-	private String ignoredLocationsFile;
 
 
 
@@ -210,9 +207,9 @@ public class MiserListener extends PropertyListenerAdapter{
 
 
 			if(SystemOut.print_loading)
-				System.out.println("[REAP][ExploreListener] --> loading input locations if any from "+Core.target_project+"/"+inputLocationsDir+"...");
+				System.out.println("[REAP][ExploreListener] --> loading input locations if any from "+Core.target_project+"/"+Core.inputLocationsDir+"...");
 
-			this.inputLocationsSet = Loader.getInputLocations(Core.target_project+"/"+inputLocationsDir);
+			this.inputLocationsSet = Loader.getInputLocations(Core.target_project+"/"+Core.inputLocationsDir);
 
 			if(SystemOut.print_loading)
 				System.out.println("[REAP][ExploreListener] --> done");
@@ -232,7 +229,7 @@ public class MiserListener extends PropertyListenerAdapter{
 			if(SystemOut.print_loading)
 				System.out.println("[REAP][ExploreListener] --> loading source info...");
 
-			this.classNames = Loader.getSources(Core.target_project+"/"+this.sourceNamesFile);
+			this.classNames = Loader.getSources(Core.target_project+"/"+Core.sourceNamesFile);
 
 			if(this.classNames==null)//if none is provided
 				this.classNames=ClassFinder.getClasses();
@@ -247,7 +244,7 @@ public class MiserListener extends PropertyListenerAdapter{
 			if(SystemOut.print_loading)
 				System.out.println("[REAP][ExploreListener] --> loading crash info...");
 
-			this.crashMile = Loader.getStackTrace(Core.target_project+"/"+this.crashMileFile,this.classNames);
+			this.crashMile = Loader.getStackTrace(Core.target_project+"/"+Core.crashMileFile,this.classNames);
 
 			if(SystemOut.print_loading)
 				System.out.println("[REAP][ExploreListener] --> done");
@@ -261,7 +258,7 @@ public class MiserListener extends PropertyListenerAdapter{
 			if(SystemOut.print_loading)
 				System.out.println("[REAP][ExploreListener] --> loading ignored locations if any...");
 
-			this.ignoredLocations = Loader.getIgnoredLocations(Core.target_project+"/"+this.ignoredLocationsFile);
+			this.ignoredLocations = Loader.getIgnoredLocations(Core.target_project+"/"+Core.ignoredLocationsFile);
 
 			if(SystemOut.print_loading)
 				System.out.println("[REAP][ExploreListener] --> done");
@@ -295,24 +292,7 @@ public class MiserListener extends PropertyListenerAdapter{
 
 	private boolean loadProperties() {
 
-		try {
-
-			this.crashMileFile = Core.properties.getProperty("crash_mile");
-			this.sourceNamesFile = Core.properties.getProperty("source_names");
-
-			this.ignoredLocationsFile = Core.properties.getProperty("ignored_locations");
-
-			this.crashMileFile = Core.properties.getProperty("crash_mile");
-
-			this.inputLocationsDir = Core.properties.getProperty("input_locations");
-
-			this.stop_any_crash = Boolean.valueOf(Core.properties.getProperty("stop_any_crash"));
-
-		}
-		catch(Exception e) { 
-			e.printStackTrace();
-			return false;
-		}
+		
 
 		return true;
 	}
@@ -698,7 +678,7 @@ public class MiserListener extends PropertyListenerAdapter{
 			}				
 
 		}
-		else if(this.stop_any_crash) {
+		else if(Core.stop_any_crash) {
 			String constraint = ConstraintClean.clean(((PCChoiceGenerator)vm.getChoiceGenerator()).getCurrentPC().spc.header);
 			System.out.println("\n\n\n\n F induced by the node holding this constraint: "+constraint+"\n\n\n\n");
 			fInducing.add(constraint);

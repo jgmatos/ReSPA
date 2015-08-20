@@ -183,7 +183,19 @@ public class Core {
 
 
 
+	public static String crashMileFile;
 
+	//stop REAP at any crash even if it is not the crash in the original execution
+	public static  boolean stop_any_crash = false;
+
+	public static  String inputLocationsDir = "";
+
+	/////////////////////////////
+	/////// PROPERTIES FILE
+	////////////////////////////
+	public static  String sourceNamesFile;
+
+	public static  String ignoredLocationsFile;
 
 
 
@@ -257,6 +269,41 @@ public class Core {
 			////////////////    ReSPA    /////////////////////
 
 
+			
+			
+			
+			////////// Listener
+			
+			
+			try {
+
+				crashMileFile = Core.properties.getProperty("crash_mile");
+				sourceNamesFile = Core.properties.getProperty("source_names");
+
+				ignoredLocationsFile = Core.properties.getProperty("ignored_locations");
+
+				crashMileFile = Core.properties.getProperty("crash_mile");
+
+				inputLocationsDir = Core.properties.getProperty("input_locations");
+
+				stop_any_crash = Boolean.valueOf(Core.properties.getProperty("stop_any_crash"));
+
+			}
+			catch(Exception e) { 
+				e.printStackTrace();
+				System.exit(-1);
+			}
+			
+			
+			
+			//////////////////////
+			
+			
+			
+			
+			
+			
+			
 			////////////////    Input Detection     /////////////////////
 			automaticInputDetection = Boolean.valueOf(properties.getProperty("input_detection"));
 
