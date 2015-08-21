@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Random;
 
 import respa.leak.CollectedLeak;
+import respa.log.Log;
 import respa.main.Core;
 import respa.main.Labeling;
 import respa.main.ReSPAListener;

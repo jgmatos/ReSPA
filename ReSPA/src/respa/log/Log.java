@@ -1,16 +1,14 @@
-package respa.search;
+package respa.log;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Properties;
 
 public class Log {
 
 	
-	private static ArrayList<String> log = new ArrayList<String>();
+	protected static ArrayList<String> log = new ArrayList<String>();
 	
 	
 	

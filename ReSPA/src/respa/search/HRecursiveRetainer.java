@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import respa.leak.CollectedLeak;
+import respa.log.Log;
 import respa.main.Core;
 import respa.main.Labeling;
 import respa.main.ReSPAListener;
