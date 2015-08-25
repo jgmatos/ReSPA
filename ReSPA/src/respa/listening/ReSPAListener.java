@@ -1,4 +1,4 @@
-package respa.main;
+package respa.listening;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -6,14 +6,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
 
+import respa.input.InputDetection;
+import respa.input.Symbolic;
+import respa.input.queuedInputInt;
+import respa.input.queuedInputString;
 import respa.log.EntryType;
 import respa.log.Log;
 import respa.log.LogReSPA;
-import respa.search.ReSPA;
-import respa.search.input.queuedInputInt;
-import respa.search.input.queuedInputString;
-import respa.search.state.Node;
-import respa.search.state.PQ;
+import respa.main.Core;
+import respa.main.ReSPA;
+import respa.output.OutputManager;
+import respa.output.SystemOut;
+import respa.queue.Node;
+import respa.queue.PQ;
+import respa.stateLabeling.Labeling;
 import respa.stateLabeling.Location;
 import respa.stateLabeling.StateLabel;
 import respa.stateLabeling.VerboseMile;
@@ -150,6 +156,7 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 
 		try {
 
+			LogReSPA.checkForOptions();
 
 
 

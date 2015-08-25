@@ -1,14 +1,10 @@
-package respa.main;
+package respa.input;
 
 
 import java.util.ArrayList;
 
-import respa.cost.CostlyNumber;
-import respa.cost.CostlyString;
-import respa.cost.CostlyVar;
-import respa.input.InputVariable;
-import respa.input.SymbolicInputInt;
-import respa.input.SymbolicInputString;
+import respa.main.Core;
+import respa.output.SystemOut;
 import respa.utils.InputLocation;
 import gov.nasa.jpf.jvm.JVM;
 import gov.nasa.jpf.symbc.bytecode.BytecodeUtils;
@@ -23,7 +19,6 @@ public class Symbolic {
 	public static int totalCreated = 0;
 	public static int justCreated = 0;
 
-	public static ArrayList<CostlyVar> cvBag = new ArrayList<CostlyVar>();
 
 	
 	public static StringSymbolic currentStringSymbolic=null;
@@ -62,7 +57,6 @@ public class Symbolic {
 		Core.symbvars_.put(symbname, sii);//makes it easier
 		Symbolic.totalCreated++;
 		Symbolic.justCreated++;
-		cvBag.add(new CostlyNumber(symbname, 1));
 		
 	}
 	
@@ -106,9 +100,6 @@ public class Symbolic {
 		Core.symbvars_.put(symbname, sis);//makes it easier
 		Symbolic.totalCreated++;
 		Symbolic.justCreated++;
-		CostlyString cs = new CostlyString(symbname, 0);
-		cs.setSymb(sym_v);
-		cvBag.add(cs);
 	}
 
 	

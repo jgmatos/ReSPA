@@ -1,4 +1,4 @@
-package respa.search;
+package respa.main;
 
 
 
@@ -24,10 +24,9 @@ import respa.input.SymbolicInputInt;
 import respa.input.SymbolicInputString;
 import respa.leak.CollectedLeak;
 import respa.leak.string.MutableLeakyString;
-import respa.main.Core;
-import respa.main.Labeling;
-import respa.main.SystemOut;
+import respa.output.SystemOut;
 import respa.stateLabeling.HashMile;
+import respa.stateLabeling.Labeling;
 import respa.stateLabeling.StateLabel;
 import respa.utils.ConstraintClean;
 import respa.utils.InputLocation;

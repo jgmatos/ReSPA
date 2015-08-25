@@ -2,7 +2,7 @@ package respa.utils.datastruct.garbagebin;
 
 import java.util.List;
 
-import respa.search.state.Node;
+import respa.queue.Node;
 import respa.stateLabeling.StateLabel;
 
 /**

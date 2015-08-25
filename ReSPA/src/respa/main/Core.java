@@ -15,9 +15,10 @@ import java.util.Scanner;
 
 import respa.input.InputBuffer;
 import respa.input.InputVariable;
+import respa.input.queuedInput;
 import respa.main.Core;
+import respa.output.SystemOut;
 import respa.path.Path;
-import respa.search.input.queuedInput;
 import respa.stateLabeling.Location;
 import respa.stateLabeling.StateLabel;
 import respa.utils.FileInInputLocation;
@@ -70,7 +71,7 @@ public class Core {
 
 	//public static ArrayList<InputBuffer> inputbuffers;
 	public static HashMap <String,InputLocation> inputLocationsSet_;
-	protected static HashSet<InputLocation> alreadyCreated;
+	public static HashSet<InputLocation> alreadyCreated;
 
 	public static HashMap<Location,FileInInputLocation> manualInputLocationsSet = new HashMap<Location, FileInInputLocation>();
 
@@ -99,7 +100,7 @@ public class Core {
 	///////////////////////////////       Input Detection       //////////////////////////////////
 
 
-	protected static boolean verbose;
+	public static boolean verbose;
 
 
 
@@ -118,8 +119,8 @@ public class Core {
 	public static Properties properties;
 
 
-	protected static boolean symbString=true;
-	protected static boolean symbInt=true;
+	public static boolean symbString=true;
+	public static boolean symbInt=true;
 
 
 

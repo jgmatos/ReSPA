@@ -1,4 +1,4 @@
-package respa.search.state;
+package respa.queue;
 
 
 public interface PQ {

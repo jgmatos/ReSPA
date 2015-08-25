@@ -1,9 +1,9 @@
-package respa.main;
+package respa.listening;
 
 import java.util.HashMap;
 
-import respa.search.state.Node;
-import respa.search.state.PQ;
+import respa.queue.Node;
+import respa.queue.PQ;
 import respa.stateLabeling.StateLabel;
 import gov.nasa.jpf.PropertyListenerAdapter;
 import gov.nasa.jpf.symbc.numeric.PathCondition;

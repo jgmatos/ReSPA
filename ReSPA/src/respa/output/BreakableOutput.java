@@ -5,7 +5,6 @@ import java.util.LinkedList;
 
 import respa.input.SymbolicInputString;
 import respa.main.Core;
-import respa.main.SystemOut;
 import respa.output.BreakableOutput;
 
 

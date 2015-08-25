@@ -1,4 +1,4 @@
-package respa.main;
+package respa.output;
 
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 
@@ -9,13 +9,10 @@ import respa.input.InputVariable;
 import respa.input.SymbolicInputInt;
 import respa.input.SymbolicInputString;
 import respa.leak.MultiLeakyPath;
-import respa.output.IndividualTokensOuput;
-import respa.output.LeakyOutput;
-import respa.output.Output;
-import respa.output.XMLOutput;
-import respa.solve.ConsoleSolver;
-import respa.solve.Solver;
-import respa.solve.XMLSolver;
+import respa.main.Core;
+import respa.output.solve.ConsoleSolver;
+import respa.output.solve.Solver;
+import respa.output.solve.XMLSolver;
 
 
 

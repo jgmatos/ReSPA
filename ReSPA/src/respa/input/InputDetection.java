@@ -1,4 +1,4 @@
-package respa.main;
+package respa.input;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,18 +14,8 @@ import gov.nasa.jpf.jvm.bytecode.InvokeInstruction;
 import gov.nasa.jpf.symbc.bytecode.BytecodeUtils;
 import gov.nasa.jpf.symbc.bytecode.BytecodeUtils.VarType;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
-import respa.input.ConcreteInputChar;
-import respa.input.InputBuffer;
-import respa.input.InputChars;
-import respa.input.InputInt;
-import respa.input.InputSource;
-import respa.input.InputTokens;
-import respa.input.InputVariable;
-import respa.input.InvokedInsn;
-import respa.input.SimpleField;
-import respa.input.SymbolicInputInt;
-import respa.input.SymbolicInputString;
 import respa.main.Core;
+import respa.output.SystemOut;
 import respa.stateLabeling.Location;
 import gov.nasa.jpf.symbc.string.StringSymbolic;
  

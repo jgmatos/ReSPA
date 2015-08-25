@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-import respa.main.SystemOut;
+import respa.output.SystemOut;
 import respa.stateLabeling.HashMile;
 import respa.stateLabeling.Location;
 import respa.stateLabeling.Milestone;

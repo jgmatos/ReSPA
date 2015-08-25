@@ -1,4 +1,4 @@
-package respa.search.state;
+package respa.queue;
 
 import java.util.ArrayList;
 import java.util.HashMap;

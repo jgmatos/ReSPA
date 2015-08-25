@@ -1,4 +1,4 @@
-package respa.search;
+package respa.main;
 
 import gov.nasa.jpf.Config;
 import gov.nasa.jpf.jvm.JVM;
@@ -14,18 +14,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import respa.input.Symbolic;
 import respa.leak.CollectedLeak;
+import respa.listening.ReSPAListener;
 import respa.log.Log;
-import respa.main.Core;
-import respa.main.Labeling;
-import respa.main.ReSPAListener;
-import respa.main.OutputManager;
-import respa.main.Symbolic;
-import respa.main.SystemOut;
+import respa.main.ExploreUtils;
+import respa.output.OutputManager;
+import respa.output.SystemOut;
 import respa.path.Path;
-import respa.search.ExploreUtils;
-import respa.search.state.*;
+import respa.queue.*;
 import respa.search.throwable.SearchFailedException;
+import respa.stateLabeling.Labeling;
 import respa.stateLabeling.StateLabel;
 
 
@@ -358,8 +357,7 @@ public class ReSPA extends Search {
 	private Node getPHI(Node node)throws SearchFailedException {
 
 
-		Log.log(verbose, "[ReSPA][SPA][GetPhi] Step forward: "+node.getLabel()+" - "+node.getLabel().getConstraint());
-
+		
 
 
 
@@ -543,7 +541,6 @@ public class ReSPA extends Search {
 			}
 		}
 
-		//		Log.log(verbose, "[ReSPA][SPA][HybridDijkstra] Performing phiComply starting from: "+Ns.getLabel());
 		//TODO: notify for comply
 
 
@@ -664,7 +661,6 @@ public class ReSPA extends Search {
 	 */
 	private Node phiComply(Node next) throws SearchFailedException{
 
-		System.out.println("[ReSPA][Comply] "+next.getLabel()+" - "+next.getLabel().getConstraint());
 		if(next.getLabel().equals(phi.getPath().getLast()))
 			return next;
 
@@ -908,7 +904,6 @@ public class ReSPA extends Search {
 	private void checkAndSetFinducing(StateLabel statelabel) {
 
 		if(ReSPAListener.f){
-			System.out.println("f inducing node: "+statelabel+" - "+statelabel.getConstraint());
 			currentNode.setFinducing(true);
 			ReSPAListener.fInducing.clear();
 			ReSPAListener.f=false;

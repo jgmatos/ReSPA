@@ -14,7 +14,7 @@
  * limitations under the License.
  */
  
-package respa.search.state;
+package respa.queue;
  
 import java.util.HashMap;
  

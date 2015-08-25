@@ -8,10 +8,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+import respa.input.queuedInput;
+import respa.input.queuedInputInt;
+import respa.input.queuedInputString;
 import respa.main.Core;
-import respa.search.input.queuedInput;
-import respa.search.input.queuedInputInt;
-import respa.search.input.queuedInputString;
 import respa.stateLabeling.Location;
 
 public class FileInInputLocation extends InputLocation{

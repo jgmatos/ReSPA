@@ -1,4 +1,4 @@
-package respa.main;
+package respa.stateLabeling;
 
 import java.util.List;
 
@@ -6,12 +6,6 @@ import gov.nasa.jpf.jvm.JVM;
 import gov.nasa.jpf.jvm.StackFrame;
 import gov.nasa.jpf.jvm.bytecode.Instruction;
 import respa.main.Core;
-import respa.stateLabeling.HashMile;
-import respa.stateLabeling.Location;
-import respa.stateLabeling.Milestone;
-import respa.stateLabeling.StateLabel;
-import respa.stateLabeling.Trace;
-import respa.stateLabeling.VerboseMile;
 
 
 

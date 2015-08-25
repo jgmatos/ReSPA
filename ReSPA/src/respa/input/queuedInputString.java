@@ -1,4 +1,4 @@
-package respa.search.input;
+package respa.input;
 
 import respa.utils.InputLocation;
 

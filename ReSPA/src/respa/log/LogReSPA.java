@@ -19,6 +19,12 @@ public class LogReSPA extends Log{
 	public static boolean evaluate=false;
 	public static boolean verbose=false;
 	
+	
+	public static void checkForOptions() {
+		
+		checkForOptions(System.getProperty("user.home")+"/.respa/log.properties");
+		
+	}
 
 	public static void checkForOptions(String filename) {
 
@@ -38,7 +44,7 @@ public class LogReSPA extends Log{
 				logOptions.put(EntryType.logEndIteration,Boolean.valueOf(options.getProperty("logEndIteration")));
 
 			if(options.contains("logMaxIteration"))
-				logOptions.put(EntryType.logEndIteration,Boolean.valueOf(options.getProperty("logEndIteration")));
+				logOptions.put(EntryType.logEndIteration,Boolean.valueOf(options.getProperty("logMaxIteration")));
 
 			if(options.contains("logStepForward"))
 				logOptions.put(EntryType.logStepForward,Boolean.valueOf(options.getProperty("logStepForward")));

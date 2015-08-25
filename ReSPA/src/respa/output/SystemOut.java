@@ -1,4 +1,4 @@
-package respa.main;
+package respa.output;
 
 import java.io.FileReader;
 import java.util.Properties;
@@ -11,6 +11,7 @@ import java.util.Properties;
  * This class controls what REAP prints in the console
  *
  */
+@Deprecated
 public class SystemOut {
 
 	
