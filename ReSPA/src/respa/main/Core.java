@@ -222,26 +222,14 @@ public class Core {
 
 		try{
 
-			properties = new Properties();
-			Properties site = new Properties();
-			site.load(new FileReader(System.getProperty("user.home")+"/.respa/site.properties"));
-			String workspace_dir = site.getProperty("workspace_dir");
-
-			/*	Properties link = new Properties();
-			link.load(new FileReader(reap_dir+"/"+"LinkPropertiesFile.properties"));
-			 */
-			Properties link = new Properties();
-			link.load(new FileReader(System.getProperty("user.home")+"/.respa/LinkPropertiesFile.properties"));
-			properties.load(new FileReader(workspace_dir+"/"+link.getProperty("target_project")+"/"+link.getProperty("properties_file")));
 
 
-
+			properties=new Properties();
+			properties.load(new FileReader(System.getProperty("user.home")+"/.respa/respa.properties"));
 			target_project = properties.getProperty("target_project");
-
-			SystemOut.load();
-
-			////////////////    ReSPA    /////////////////////
-
+			
+			
+			
 			try{
 				maxAttempts = Integer.valueOf(properties.getProperty("maxAttempts"));
 			}
@@ -287,7 +275,7 @@ public class Core {
 
 				inputLocationsDir = Core.properties.getProperty("input_locations");
 
-				stop_any_crash = Boolean.valueOf(Core.properties.getProperty("stop_any_crash"));
+				stop_any_crash = false;
 
 			}
 			catch(Exception e) { 

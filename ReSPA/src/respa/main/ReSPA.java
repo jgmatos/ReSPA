@@ -108,7 +108,7 @@ public class ReSPA extends Search {
 		PQ = new PQ_Remembering();
 		GB = new HashMap<StateLabel, Node>();
 		Core.load();
-		setListeners();
+		
 
 
 
@@ -155,6 +155,7 @@ public class ReSPA extends Search {
 		currentParent = first;
 
 		notifySearchStarted();
+		setListeners();
 
 		if (!hasPropertyTermination()) {
 			success=false;
@@ -359,7 +360,7 @@ public class ReSPA extends Search {
 
 		
 
-
+		notifyStepForward(node);
 
 		if(node.isFinducing())
 			return node;
@@ -1053,6 +1054,7 @@ public class ReSPA extends Search {
 
 	private void setListeners() {
 
+		System.out.println("aaaaaa "+super.listeners.length);
 		respalisteners = new ArrayList<ReSPAListener>();
 		for(SearchListener sl: super.listeners)
 			if(sl instanceof ReSPAListener)

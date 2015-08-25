@@ -36,7 +36,7 @@ public class Symbolic {
 		vm.getCurrentThread().getTopFrame().setOperandAttr(sym_v);
 
 		if(SystemOut.print_new_symb)
-			System.out.println("[REAP][Symbolic] --> NEW SYMBC Int: "+name+" -> "+sym_v+" ; "+
+			System.out.println("[ReSPA][Symbolic] --> NEW SYMBC Int: "+name+" -> "+sym_v+" ; "+
 					vm.getLastInstruction().getFileLocation()+" ; value to anonymize: "+il.value);
 
 		SymbolicInputInt sii = new SymbolicInputInt(Core.symbvars.size(),0);
@@ -75,7 +75,7 @@ public class Symbolic {
 		vm.getCurrentThread().getTopFrame().setOperandAttr(sym_v);
 		
 		if(SystemOut.print_new_symb)
-			System.out.println("[REAP][Symbolic] --> NEW SYMBC String: "+name+" -> "+sym_v+" ; "+
+			System.out.println("[ReSPA][Symbolic] --> NEW SYMBC String: "+name+" -> "+sym_v+" ; "+
 					vm.getLastInstruction().getFileLocation()+" ; value to anonymize: "+il.value);
 
 		currentStringSymbolic = sym_v;
@@ -112,7 +112,7 @@ public class Symbolic {
 		vm.getCurrentThread().getTopFrame().setOperandAttr(sym_v);
 
 		if(SystemOut.print_new_symb)
-			System.out.println("[REAP][Symbolic] --> NEW SYMBC boolean: "+name+" -> "+sym_v+" ; "+
+			System.out.println("[ReSPA][Symbolic] --> NEW SYMBC boolean: "+name+" -> "+sym_v+" ; "+
 					vm.getLastInstruction().getFileLocation()+" ; value to anonymize: "+il.value);
 
 		SymbolicInputInt sii = new SymbolicInputInt(Core.symbvars.size(),0);

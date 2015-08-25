@@ -34,58 +34,58 @@ public class LogReSPA extends Log{
 			Properties options = new Properties();
 			options.load(new FileReader(filename));
 
-			if(options.contains("logPhiGet"))
+			if(options.containsKey("logPhiGet"))
 				logOptions.put(EntryType.logPhiGet,Boolean.valueOf(options.getProperty("logPhiGet")));
 
-			if(options.contains("logStartIteration"))
+			if(options.containsKey("logStartIteration"))
 				logOptions.put(EntryType.logStartIteration,Boolean.valueOf(options.getProperty("logStartIteration")));
 
-			if(options.contains("logEndIteration"))
+			if(options.containsKey("logEndIteration"))
 				logOptions.put(EntryType.logEndIteration,Boolean.valueOf(options.getProperty("logEndIteration")));
 
-			if(options.contains("logMaxIteration"))
+			if(options.containsKey("logMaxIteration"))
 				logOptions.put(EntryType.logEndIteration,Boolean.valueOf(options.getProperty("logMaxIteration")));
 
-			if(options.contains("logStepForward"))
+			if(options.containsKey("logStepForward"))
 				logOptions.put(EntryType.logStepForward,Boolean.valueOf(options.getProperty("logStepForward")));
 
-			if(options.contains("logReproduced"))
+			if(options.containsKey("logReproduced"))
 				logOptions.put(EntryType.logReproduced,Boolean.valueOf(options.getProperty("logReproduced")));
 
-			if(options.contains("logNotReproduced"))
+			if(options.containsKey("logNotReproduced"))
 				logOptions.put(EntryType.logNotReproduced,Boolean.valueOf(options.getProperty("logNotReproduced")));
 
-			if(options.contains("logSuspect"))
+			if(options.containsKey("logSuspect"))
 				logOptions.put(EntryType.logSuspect,Boolean.valueOf(options.getProperty("logSuspect")));
 
-			if(options.contains("logNewNm"))
+			if(options.containsKey("logNewNm"))
 				logOptions.put(EntryType.logNewNm,Boolean.valueOf(options.getProperty("logNewNm")));
 
-			if(options.contains("logGBrecovered"))
+			if(options.containsKey("logGBrecovered"))
 				logOptions.put(EntryType.logGBrecovered,Boolean.valueOf(options.getProperty("logGBrecovered")));
 
-			if(options.contains("logGBadded"))
+			if(options.containsKey("logGBadded"))
 				logOptions.put(EntryType.logGBadded,Boolean.valueOf(options.getProperty("logGBadded")));
 
-			if(options.contains("logDijkstra"))
+			if(options.containsKey("logDijkstra"))
 				logOptions.put(EntryType.logDijkstra,Boolean.valueOf(options.getProperty("logDijkstra")));
 
-			if(options.contains("logPushNode"))
+			if(options.containsKey("logPushNode"))
 				logOptions.put(EntryType.logPushNode,Boolean.valueOf(options.getProperty("logPushNode")));
 
-			if(options.contains("logPopNode"))
+			if(options.containsKey("logPopNode"))
 				logOptions.put(EntryType.logPopNode,Boolean.valueOf(options.getProperty("logPopNode")));
 
-			if(options.contains("logUpdateNode"))
+			if(options.containsKey("logUpdateNode"))
 				logOptions.put(EntryType.logUpdateNode,Boolean.valueOf(options.getProperty("logUpdateNode")));
 
-			if(options.contains("logOutOfR"))
+			if(options.containsKey("logOutOfR"))
 				logOptions.put(EntryType.logOutOfR,Boolean.valueOf(options.getProperty("logOutOfR")));
 			
-			if(options.contains("evaluate"))
+			if(options.containsKey("evaluate"))
 				logOptions.put(EntryType.evaluate,Boolean.valueOf(options.getProperty("evaluate")));
 			
-			if(options.contains("verbose"))
+			if(options.containsKey("verbose"))
 				logOptions.put(EntryType.verbose,Boolean.valueOf(options.getProperty("verbose")));
 
 			logOptions.put(EntryType.logError,true);
@@ -146,7 +146,7 @@ public class LogReSPA extends Log{
 	
 
 	public static void handleEvent(EntryType et,String event) {
-		
+
 		if(logOptions.get(et))
 			log(logOptions.get(EntryType.verbose), "[ReSPA][event]["+et.toString()+"] "+event);
 		
