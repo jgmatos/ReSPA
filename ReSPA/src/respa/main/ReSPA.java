@@ -19,8 +19,6 @@ import respa.leak.CollectedLeak;
 import respa.listening.ReSPAListener;
 import respa.log.Log;
 import respa.main.ExploreUtils;
-import respa.output.OutputManager;
-import respa.output.SystemOut;
 import respa.path.Path;
 import respa.queue.*;
 import respa.search.throwable.SearchFailedException;
@@ -107,7 +105,7 @@ public class ReSPA extends Search {
 		phi = new Path(false);
 		PQ = new PQ_Remembering();
 		GB = new HashMap<StateLabel, Node>();
-		Core.load();
+		ReSPAConfig.load();
 		
 
 
@@ -147,8 +145,7 @@ public class ReSPA extends Search {
 	@Override
 	public void search () {
 
-		verbose = SystemOut.debug;
-		R = Core.radius;
+		R = ReSPAConfig.radius;
 
 
 		Node first = getFirstState();
@@ -183,7 +180,6 @@ public class ReSPA extends Search {
 					cost = fnode.getLeak();
 
 
-					//			System.out.println("--------------------------");
 					StateLabel nodeid = fnode.getLabel();
 					LinkedList<StateLabel> dummy = new LinkedList<StateLabel>();
 					do{
@@ -194,9 +190,7 @@ public class ReSPA extends Search {
 					phi.clear();
 					for(StateLabel sl:dummy){
 						phi.appendState(sl);
-						//System.out.println(sl+" - "+sl.getConstraint());
 					}
-					//					System.out.println("-------------------------- phi has size "+phi.size());
 
 
 					gettingPhi=false;
@@ -204,14 +198,13 @@ public class ReSPA extends Search {
 					GB.clear();//clear
 
 					restoreState(first);
-					Core.clearSymb();
+					ReSPAConfig.clearSymb();
 					notifySearchStarted();
 
 					if((fnode = SPA(first, phi.get(phi.size()/2) , phi.getPath().getLast() ))==null){
 
 						notifyReSPAerror("[ReSPA][SPA][ERROR] --> null path condition \n\n\n");
 						done=true;
-						Log.save(Core.target_project+"/retainerlog.txt");
 						throw new SearchFailedException();
 
 					}
@@ -227,11 +220,11 @@ public class ReSPA extends Search {
 
 
 				}
-				while(cost > fnode.getLeak() && Core.maxAttempts <= pcs.size());
+				while(cost > fnode.getLeak() && ReSPAConfig.maxAttempts <= pcs.size());
 
 
 				PathCondition finalPC;
-				if(Core.maxAttempts <= pcs.size()){
+				if(ReSPAConfig.maxAttempts <= pcs.size()){
 
 					finalPC = pcs.get((new Random()).nextInt(pcs.size()));
 					notifyMaxIterations(it, finalPC);
@@ -248,6 +241,8 @@ public class ReSPA extends Search {
 
 			}
 			catch(SearchFailedException sfe){
+				for(StackTraceElement ste: sfe.getStackTrace())
+					System.out.println(ste.toString());
 				notifyReSPAerror("[ReSPA][SPA][ERROR] "+sfe.getMessage());
 
 			}
@@ -953,7 +948,7 @@ public class ReSPA extends Search {
 		if(vm.getChoiceGenerator()!=null&&(vm.getChoiceGenerator() instanceof PCChoiceGenerator)){
 			PathCondition currentPC = ((PCChoiceGenerator)vm.getChoiceGenerator()).getCurrentPC();
 			if(currentPC!=null){
-				Core.currentPathCondition = currentPC;
+				ReSPAConfig.currentPathCondition = currentPC;
 
 			}
 		}
@@ -1092,7 +1087,7 @@ public class ReSPA extends Search {
 
 	}
 
-
+	@SuppressWarnings("unused")
 	private void notifyEndIteration(int n, PathCondition pc) {
 
 		for(ReSPAListener rl: respalisteners)
@@ -1140,6 +1135,7 @@ public class ReSPA extends Search {
 
 	}
 
+	@SuppressWarnings("unused")
 	private void notifyNewNm(Node Nm) {
 
 		for(ReSPAListener rl: respalisteners)

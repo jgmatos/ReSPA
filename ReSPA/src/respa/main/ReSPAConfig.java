@@ -16,7 +16,7 @@ import java.util.Scanner;
 import respa.input.InputBuffer;
 import respa.input.InputVariable;
 import respa.input.queuedInput;
-import respa.main.Core;
+import respa.main.ReSPAConfig;
 import respa.output.SystemOut;
 import respa.path.Path;
 import respa.stateLabeling.Location;
@@ -32,10 +32,9 @@ import respa.utils.InputLocation;
  * 	the main classes of ReSPA
  *
  */
-public class Core {
+public class ReSPAConfig {
 
 
-	public static String target_project;
 
 	///////////////////////////////       ReSPA       //////////////////////////////////
 
@@ -66,8 +65,8 @@ public class Core {
 
 
 	public static char[] input;
-	
-	
+
+
 
 	//public static ArrayList<InputBuffer> inputbuffers;
 	public static HashMap <String,InputLocation> inputLocationsSet_;
@@ -175,7 +174,6 @@ public class Core {
 	///////////////////////////////       Crash info       //////////////////////////////////
 
 
-	
 
 
 
@@ -184,19 +182,13 @@ public class Core {
 
 
 
-	public static String crashMileFile;
+
 
 	//stop REAP at any crash even if it is not the crash in the original execution
 	public static  boolean stop_any_crash = false;
 
-	public static  String inputLocationsDir = "";
 
-	/////////////////////////////
-	/////// PROPERTIES FILE
-	////////////////////////////
-	public static  String sourceNamesFile;
 
-	public static  String ignoredLocationsFile;
 
 
 
@@ -223,13 +215,10 @@ public class Core {
 		try{
 
 
-
 			properties=new Properties();
-			properties.load(new FileReader(System.getProperty("user.home")+"/.respa/respa.properties"));
-			target_project = properties.getProperty("target_project");
-			
-			
-			
+			properties.load(new FileReader(System.getProperty("user.dir")+"/.respa/tmp/respa.properties"));
+
+
 			try{
 				maxAttempts = Integer.valueOf(properties.getProperty("maxAttempts"));
 			}
@@ -239,65 +228,37 @@ public class Core {
 
 
 
-
 			String strR = properties.getProperty("radius");
 			if(strR.equals("max"))
-				Core.radius=Integer.MAX_VALUE;
+				ReSPAConfig.radius=Integer.MAX_VALUE;
 			else
-				Core.radius=Integer.valueOf(strR);
-
+				ReSPAConfig.radius=Integer.valueOf(strR);
 
 
 
 
 			try{
-				Core.intToChar=Boolean.valueOf(properties.getProperty("intToChar"));
+				ReSPAConfig.intToChar=Boolean.valueOf(properties.getProperty("intToChar"));
 			}catch(Exception e){}
 
 
 			////////////////    ReSPA    /////////////////////
 
 
-			
-			
-			
-			////////// Listener
-			
-			
-			try {
 
-				crashMileFile = Core.properties.getProperty("crash_mile");
-				sourceNamesFile = Core.properties.getProperty("source_names");
+			stop_any_crash = false;
 
-				ignoredLocationsFile = Core.properties.getProperty("ignored_locations");
 
-				crashMileFile = Core.properties.getProperty("crash_mile");
 
-				inputLocationsDir = Core.properties.getProperty("input_locations");
 
-				stop_any_crash = false;
 
-			}
-			catch(Exception e) { 
-				e.printStackTrace();
-				System.exit(-1);
-			}
-			
-			
-			
-			//////////////////////
-			
-			
-			
-			
-			
-			
-			
+
+
 			////////////////    Input Detection     /////////////////////
 			automaticInputDetection = Boolean.valueOf(properties.getProperty("input_detection"));
 
 
-			
+
 
 			singleInputSource = true;//later we may consider to include several
 			inputBuffer=null;
@@ -325,12 +286,11 @@ public class Core {
 			symbInt = Boolean.valueOf(properties.getProperty("symb_int"));
 
 
+			ignoreString = Boolean.valueOf(ReSPAConfig.properties.getProperty("ignore_string"));
+			ignoreNumeric= Boolean.valueOf(ReSPAConfig.properties.getProperty("ignore_numeric"));
 
-			ignoreString = Boolean.valueOf(Core.properties.getProperty("ignore_string"));
-			ignoreNumeric= Boolean.valueOf(Core.properties.getProperty("ignore_numeric"));
-
-			ignoreNumericPC =  Boolean.valueOf(Core.properties.getProperty("ignore_numeric_pc"));
-			ignoreStringPC =  Boolean.valueOf(Core.properties.getProperty("ignore_string_pc"));
+			ignoreNumericPC =  Boolean.valueOf(ReSPAConfig.properties.getProperty("ignore_numeric_pc"));
+			ignoreStringPC =  Boolean.valueOf(ReSPAConfig.properties.getProperty("ignore_string_pc"));
 
 			try{
 				timeout = Integer.valueOf(properties.getProperty("timeout"));
@@ -339,10 +299,10 @@ public class Core {
 				timeout = 1800000;//10 minutes
 			}
 
-			
+
 			try {
-				boundMemory = Boolean.valueOf(Core.properties.getProperty("boundMemory"));
-				memoryBound = Long.valueOf(Core.properties.getProperty("memoryBound"));
+				boundMemory = Boolean.valueOf(ReSPAConfig.properties.getProperty("boundMemory"));
+				memoryBound = Long.valueOf(ReSPAConfig.properties.getProperty("memoryBound"));
 			}
 			catch(Exception e) {
 			}
@@ -396,24 +356,15 @@ public class Core {
 
 		try {
 
-			File inputDir = new File(properties.getProperty("input_dir"));
 			String concatInput="";
-			File f;
-			if(!inputDir.getAbsolutePath().contains(target_project))
-				f= new File(target_project+"/"+inputDir);
-			else
-				f= new File(inputDir.getAbsolutePath());
+			File f;			
+
+			f= new File(System.getProperty("user.dir")+"/.respa/tmp/input.txt");
 			FileReader fr = new FileReader(f);
 			input=new char[(int)f.length()];
 			fr.read(input);
 			fr.close();
 
-
-			if(SystemOut.print_input){
-				System.out.println("[REAP][Core] --> Input:");
-				for(int i=0;i<input.length;i++)
-					System.out.println("input["+i+"] = "+input[i]+" ("+((int)(input[i]))+")");
-			}
 
 
 			if(var_type.equals("int")) {
@@ -452,14 +403,13 @@ public class Core {
 
 			}
 			else if(inputType.equals("xml")) {
-				totalBytes=Core.input.length;
-				totalChars=Core.input.length;
-				concatInput=String.valueOf(Core.input);
+				totalBytes=ReSPAConfig.input.length;
+				totalChars=ReSPAConfig.input.length;
+				concatInput=String.valueOf(ReSPAConfig.input);
 			}
 
 
 		} catch (FileNotFoundException e) {
-
 			e.printStackTrace();
 
 		} catch (IOException e) {

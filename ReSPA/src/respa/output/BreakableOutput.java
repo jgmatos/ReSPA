@@ -4,7 +4,7 @@ import java.io.FileWriter;
 import java.util.LinkedList;
 
 import respa.input.SymbolicInputString;
-import respa.main.Core;
+import respa.main.ReSPAConfig;
 import respa.output.BreakableOutput;
 
 
@@ -190,8 +190,8 @@ public class BreakableOutput implements Output{
 				residue+=dummy.block.length();
 			}
 			else{//anonymized blocks
-				for(int j=0;j<dummy.block.length()&&j<Core.input.length;j++){
-					if(dummy.block.charAt(j)==Core.input[dummy.offset+j]){
+				for(int j=0;j<dummy.block.length()&&j<ReSPAConfig.input.length;j++){
+					if(dummy.block.charAt(j)==ReSPAConfig.input[dummy.offset+j]){
 						residue++;
 					}
 				}

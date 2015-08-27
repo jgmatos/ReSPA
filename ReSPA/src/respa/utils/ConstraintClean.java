@@ -1,6 +1,6 @@
 package respa.utils;
 
-import respa.main.Core;
+import respa.main.ReSPAConfig;
 import gov.nasa.jpf.symbc.numeric.Constraint;
 import gov.nasa.jpf.symbc.numeric.Expression;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
@@ -185,7 +185,7 @@ public class ConstraintClean {
 		}
 		else if(stmt instanceof gov.nasa.jpf.symbc.numeric.SymbolicInteger) {
 
-			if(Core.automaticInputDetection) {
+			if(ReSPAConfig.automaticInputDetection) {
 
 				SymbolicInteger symbint = (SymbolicInteger)stmt; //dont want to cast all the time
 				String tostring = symbint.toString();

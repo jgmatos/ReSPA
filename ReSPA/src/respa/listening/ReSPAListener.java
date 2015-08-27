@@ -11,12 +11,10 @@ import respa.input.Symbolic;
 import respa.input.queuedInputInt;
 import respa.input.queuedInputString;
 import respa.log.EntryType;
-import respa.log.Log;
 import respa.log.LogReSPA;
-import respa.main.Core;
+import respa.main.ReSPAConfig;
 import respa.main.ReSPA;
 import respa.output.OutputManager;
-import respa.output.SystemOut;
 import respa.queue.Node;
 import respa.queue.PQ;
 import respa.stateLabeling.Labeling;
@@ -30,7 +28,6 @@ import respa.utils.InputLocation;
 import respa.utils.Loader;
 import gov.nasa.jpf.Config;
 import gov.nasa.jpf.JPF;
-import gov.nasa.jpf.PropertyListenerAdapter;
 import gov.nasa.jpf.jvm.ChoiceGenerator;
 import gov.nasa.jpf.jvm.JVM;
 import gov.nasa.jpf.jvm.bytecode.Instruction;
@@ -206,13 +203,6 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 
 		try{
 
-			if(SystemOut.print_loading)
-				System.out.println("[REAP][ExploreListener] --> loading properties...");
-
-			loadProperties();
-
-			if(SystemOut.print_loading)
-				System.out.println("[REAP][ExploreListener] --> done");
 
 
 
@@ -220,79 +210,65 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 
 
 
-			if(SystemOut.print_loading)
-				System.out.println("[REAP][ExploreListener] --> loading input locations if any from "+Core.target_project+"/"+Core.inputLocationsDir+"...");
 
-			this.inputLocationsSet = Loader.getInputLocations(Core.target_project+"/"+Core.inputLocationsDir);
+			System.out.println("[REAP][ExploreListener] --> loading input locations if any from "+System.getProperty("user.dir")+"/.respa/tmp/inputLocations.txt");
 
-			if(SystemOut.print_loading)
-				System.out.println("[REAP][ExploreListener] --> done");
+			this.inputLocationsSet = Loader.getInputLocations(System.getProperty("user.dir")+"/.respa/tmp/inputLocations.txt");
+
+			System.out.println("[REAP][ExploreListener] --> done");
 
 
-			if(SystemOut.print_loading)
-				System.out.println("[REAP][ExploreListener] --> loading manual input locations if any...");
+			System.out.println("[REAP][ExploreListener] --> loading manual input locations if any...");
 
-			Core.manualInputLocationsSet = FileInInputLocation.extractFileIn();
+			ReSPAConfig.manualInputLocationsSet = FileInInputLocation.extractFileIn();
 
-			if(SystemOut.print_loading)
-				System.out.println("[REAP][ExploreListener] --> done");
+
+			System.out.println("[REAP][ExploreListener] --> done");
 
 
 
 
-			if(SystemOut.print_loading)
-				System.out.println("[REAP][ExploreListener] --> loading source info...");
 
-			this.classNames = Loader.getSources(Core.target_project+"/"+Core.sourceNamesFile);
+			System.out.println("[REAP][ExploreListener] --> loading source info... "+System.getProperty("user.dir")+"/.respa/tmp/classNames.txt");
+
+			this.classNames = Loader.getSources(System.getProperty("user.dir")+"/.respa/tmp/classNames.txt");
 
 			if(this.classNames==null)//if none is provided
 				this.classNames=ClassFinder.getClasses();
 
-			if(SystemOut.print_loading)
-				System.out.println("[REAP][ExploreListener] --> done");
 
-
-
-
-
-			if(SystemOut.print_loading)
-				System.out.println("[REAP][ExploreListener] --> loading crash info...");
-
-			this.crashMile = Loader.getStackTrace(Core.target_project+"/"+Core.crashMileFile,this.classNames);
-
-			if(SystemOut.print_loading)
-				System.out.println("[REAP][ExploreListener] --> done");
+			System.out.println("[REAP][ExploreListener] --> done");
 
 
 
 
 
 
+			System.out.println("[REAP][ExploreListener] --> loading crash info... "+System.getProperty("user.dir")+"/.respa/tmp/exceptionStackTrace.txt");
 
-			if(SystemOut.print_loading)
-				System.out.println("[REAP][ExploreListener] --> loading ignored locations if any...");
+			this.crashMile = Loader.getStackTrace(System.getProperty("user.dir")+"/.respa/tmp/exceptionStackTrace.txt",this.classNames);
 
-			this.ignoredLocations = Loader.getIgnoredLocations(Core.target_project+"/"+Core.ignoredLocationsFile);
 
-			if(SystemOut.print_loading)
-				System.out.println("[REAP][ExploreListener] --> done");
+			System.out.println("[REAP][ExploreListener] --> done");
 
 
 
 
 
 
-			if(SystemOut.print_loading)
-				System.out.println("[REAP][ExploreListener] --> loading AWT files...");
 
 
-			if(SystemOut.print_loading)
-				System.out.println("[REAP][ExploreListener] --> done");
+
+
+
+
+
+
+			System.out.println("[REAP][ExploreListener] --> done");
 
 			return true;
 
 		}catch(Throwable t) {
-
 			t.printStackTrace();
 			return false;
 
@@ -304,13 +280,7 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 
 
 
-	private boolean loadProperties() {
-
-
-
-		return true;
-	}
-
+	
 
 
 	public void searchStarted(Search search) {
@@ -369,10 +339,7 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 					//System.out.println("insn: "+lastInsn.getFileLocation());
 
 					//we have the option to ignore lines of code
-					if(this.ignoredLocations!=null && this.ignoredLocations.contains(l)){
-						vm.getCurrentThread().skipInstruction(lastInsn.getNext());
-					}
-					else if(Core.automaticInputDetection) { //detect input automatically?
+					if(ReSPAConfig.automaticInputDetection) { //detect input automatically?
 						automaticInputDetection(lastInsn);
 					}
 					else {//or manually?
@@ -538,9 +505,9 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 
 
 
-		if(Core.manualInputLocationsSet!=null&&Core.manualInputLocationsSet.containsKey(key)) {//under test
+		if(ReSPAConfig.manualInputLocationsSet!=null&&ReSPAConfig.manualInputLocationsSet.containsKey(key)) {//under test
 
-			FileInInputLocation fil = Core.manualInputLocationsSet.get(key);
+			FileInInputLocation fil = ReSPAConfig.manualInputLocationsSet.get(key);
 			fil.mile=Labeling.getCurrentMile(vm);
 
 
@@ -610,7 +577,7 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 
 			if(il.variableType.equals("java.lang.String")) {
 
-				if(!Core.alreadyCreated.contains(il)){
+				if(!ReSPAConfig.alreadyCreated.contains(il)){
 
 					Symbolic.newSymbolicString(vm, il);						
 
@@ -619,7 +586,7 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 			}
 			else if(il.variableType.equals("int")) {
 
-				if(!Core.alreadyCreated.contains(il)){
+				if(!ReSPAConfig.alreadyCreated.contains(il)){
 
 					Symbolic.newSymbolicInt(vm, il);
 
@@ -627,7 +594,7 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 			}
 			else if(il.variableType.equals("boolean")) {
 
-				if(!Core.alreadyCreated.contains(il)){
+				if(!ReSPAConfig.alreadyCreated.contains(il)){
 
 					Symbolic.newSymbolicBoolean(vm, il);
 
@@ -681,7 +648,7 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 				String constraint="";
 				if(pcg!=null){
 
-					if(Core.ignoreNumericPC)
+					if(ReSPAConfig.ignoreNumericPC)
 						constraint = ConstraintClean.clean(pcg.getCurrentPC().spc.header);
 					else
 						constraint = ConstraintClean.clean(pcg.getCurrentPC().header);
@@ -693,7 +660,7 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 			}				
 
 		}
-		else if(Core.stop_any_crash) {
+		else if(ReSPAConfig.stop_any_crash) {
 			String constraint = ConstraintClean.clean(((PCChoiceGenerator)vm.getChoiceGenerator()).getCurrentPC().spc.header);
 			System.out.println("\n\n\n\n F induced by the node holding this constraint: "+constraint+"\n\n\n\n");
 			fInducing.add(constraint);
@@ -778,7 +745,7 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 
 	public void stateAdvanced(Search search) {
 
-		if(System.currentTimeMillis()-newIterationTS>Core.timeout){
+		if(System.currentTimeMillis()-newIterationTS>ReSPAConfig.timeout){
 			search.terminate();
 			//searchFinished(thisSearch);
 			System.exit(0);
@@ -863,7 +830,9 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 			LogReSPA.verboseLog("Residue: "+(OutputManager.residue)+" = "+OutputManager.residuePercent);
 			LogReSPA.verboseLog("Elapsed time: "+(System.currentTimeMillis()-this.startts));
 			LogReSPA.verboseLog("Memory: "+(Runtime.getRuntime().totalMemory()));
-			LogReSPA.log(false,"new PC: "+(PC)+"\n"+PC.spc);
+
+			if(PC!=null)			
+				LogReSPA.log(false,"new PC: "+(PC)+"\n"+PC.spc);
 			LogReSPA.log(false,"\n\n ####################################################################################\n\n");
 		}
 	}
@@ -949,18 +918,17 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 			LogReSPA.verboseLog("Amount of dropped nodes (out of R): "+(outofR));
 
 			//LogReSPA.verboseLog("Size of phi: "+(phi.size()));
-			LogReSPA.log(false,"new PC: "+(pc)+"\n"+pc.spc);
+			if(pc!=null)			
+				LogReSPA.log(false,"new PC: "+(pc)+"\n"+pc.spc);
 			LogReSPA.log(false,"\n\n ####################################################################################\n\n");
-			
+
 		}
 
-	
 
 
-		LogReSPA.save(Core.target_project+"/retainerlog.txt");
 
-		System.out.println(pc);
-		System.out.println(pc.spc);
+		LogReSPA.save(System.getProperty("user.dir")+"/.respa/tmp/log.txt");
+
 
 
 	}
@@ -976,7 +944,7 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 	@Override
 	public void respa_reproduced(Node nx, StateLabel nm) {
 
-		num_success_hybrid++;
+		num_success_hybrid++;num_hybrid++;
 		LogReSPA.handleEvent(EntryType.logReproduced, "F was reproduced: BoundedDijkstra("+
 				nx.getLabel()+"->"+nm+") + phiComply. Successful: "+num_success_hybrid+
 				" out of "+num_hybrid);
@@ -987,7 +955,7 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 	@Override
 	public void respa_notreproduced(Node nx, StateLabel nm) {
 
-		num_notsuccess_hybrid++;
+		num_notsuccess_hybrid++;num_hybrid++;
 		LogReSPA.handleEvent(EntryType.logNotReproduced, "F was *not* reproduced: BoundedDijkstra("+
 				nx.getLabel()+"-"+nx.getLabel().getConstraint()+"->"+nm+"-"+nm.getConstraint()+") + phiComply. Unsuccessful: "+num_notsuccess_hybrid+
 				" out of "+num_hybrid);

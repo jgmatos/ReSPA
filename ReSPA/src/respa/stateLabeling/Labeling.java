@@ -5,7 +5,7 @@ import java.util.List;
 import gov.nasa.jpf.jvm.JVM;
 import gov.nasa.jpf.jvm.StackFrame;
 import gov.nasa.jpf.jvm.bytecode.Instruction;
-import respa.main.Core;
+import respa.main.ReSPAConfig;
 
 
 
@@ -90,7 +90,7 @@ public class Labeling {
 		ifStmtMile.setTrace(trace);
 
 		
-		if(Core.verbose)
+		if(ReSPAConfig.verbose)
 			return ifStmtMile;
 		else
 			return new HashMile(ifStmtMile);
@@ -143,7 +143,7 @@ public class Labeling {
 		//	System.out.println("aaaaa: "+crucialMile+" ;; "+(new HashMile(crucialMile))+
 			//		" ;; "+stack.size()+" == "+vm.getChoiceGenerator().getThreadInfo().getInvokedStackFrames().size()+" == "+vm.getCurrentThread().getStack().size()+" == "+vm.getCurrentThread().getChangedStackFrames().size());
 
-		if(Core.verbose)
+		if(ReSPAConfig.verbose)
 			return crucialMile;
 		else
 			return new HashMile(crucialMile);
@@ -171,7 +171,7 @@ public class Labeling {
 			crucialMile = new VerboseMile(new Location(vm.getCurrentTransition().getStep(stepForCrucial).toString()),trace);
 		}
 
-		if(Core.verbose)
+		if(ReSPAConfig.verbose)
 			return crucialMile;
 		else
 			return new HashMile(crucialMile);
@@ -195,7 +195,7 @@ public class Labeling {
 
 		ifStmtMile.setTrace(trace);
 
-		if(Core.verbose)
+		if(ReSPAConfig.verbose)
 			return ifStmtMile;
 		else
 			return new HashMile(ifStmtMile);
@@ -212,7 +212,7 @@ public class Labeling {
 		
 		try{
 		
-			stepForCrucial = Integer.valueOf(Core.properties.getProperty("step_for_crucial"));
+			stepForCrucial = Integer.valueOf(ReSPAConfig.properties.getProperty("step_for_crucial"));
 
 		}
 		catch(Exception e) {
@@ -279,7 +279,7 @@ public class Labeling {
 		currentMile.setTrace(trace);
 
 		
-		if(Core.verbose)
+		if(ReSPAConfig.verbose)
 			return currentMile;
 		else
 			return new HashMile(currentMile);
@@ -329,7 +329,7 @@ public class Labeling {
 			crucialMile = new VerboseMile(new Location(vm.getCurrentTransition().getStep(stepForCrucial).toString()),trace);
 		}
 
-		if(Core.verbose)
+		if(ReSPAConfig.verbose)
 			return crucialMile;
 		else
 			return new HashMile(crucialMile);

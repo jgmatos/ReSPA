@@ -147,6 +147,8 @@ public class LogReSPA extends Log{
 
 	public static void handleEvent(EntryType et,String event) {
 
+
+
 		if(logOptions.get(et))
 			log(logOptions.get(EntryType.verbose), "[ReSPA][event]["+et.toString()+"] "+event);
 		

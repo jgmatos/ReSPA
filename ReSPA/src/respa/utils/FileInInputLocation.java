@@ -11,7 +11,7 @@ import java.util.Scanner;
 import respa.input.queuedInput;
 import respa.input.queuedInputInt;
 import respa.input.queuedInputString;
-import respa.main.Core;
+import respa.main.ReSPAConfig;
 import respa.stateLabeling.Location;
 
 public class FileInInputLocation extends InputLocation{
@@ -189,7 +189,7 @@ public class FileInInputLocation extends InputLocation{
 
 	public static boolean checkFileIn() {
 
-		File f = new File(Core.target_project+"/FileIn");
+		File f = new File(System.getProperty("user.home")+"/.respa/tmp/FileIn");
 		if(f.exists())
 			return true;
 
@@ -202,7 +202,7 @@ public class FileInInputLocation extends InputLocation{
 		if(!checkFileIn())
 			return null;
 
-		File f = new File(Core.target_project+"/FileIn");
+		File f = new File(System.getProperty("user.home")+"/.respa/tmp/FileIn");
 		File [] list= f.listFiles();
 		FileInInputLocation fil;
 		

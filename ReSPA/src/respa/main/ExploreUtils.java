@@ -167,7 +167,7 @@ public class ExploreUtils {
 
 
 		if(currentPC!=null&&currentPC.header!=null && 
-				!Core.ignoreNumeric){
+				!ReSPAConfig.ignoreNumeric){
 
 			boolean stmtCompare=dissectConstraint(false);
 
@@ -219,7 +219,7 @@ public class ExploreUtils {
 		else if(currentPC!=null&&currentPC.spc!=null&&currentPC.spc.header!=null && 
 				/*	( (this.lastStrConstraint==null) || 
 							!this.lastStrConstraint.equals(currentPC.spc.header)) &&*/
-				!Core.ignoreString){
+				!ReSPAConfig.ignoreString){
 
 
 			boolean stmtCompare=dissectStringConstraint(false);
@@ -280,7 +280,7 @@ public class ExploreUtils {
 
 
 		if(currentPC!=null&&currentPC.header!=null && 
-				!Core.ignoreNumeric){
+				!ReSPAConfig.ignoreNumeric){
 
 			boolean stmtCompare = dissectConstraint(false);
 
@@ -340,7 +340,7 @@ public class ExploreUtils {
 		else if(currentPC!=null&&currentPC.spc!=null&&currentPC.spc.header!=null && 
 				/*	( (this.lastStrConstraint==null) || 
 						!this.lastStrConstraint.equals(currentPC.spc.header)) &&*/
-				!Core.ignoreString){
+				!ReSPAConfig.ignoreString){
 			/***
 			 * 
 			 * 
@@ -397,7 +397,7 @@ public class ExploreUtils {
 
 
 		if(currentPC!=null)
-			Core.currentPathCondition = currentPC;
+			ReSPAConfig.currentPathCondition = currentPC;
 
 		if(SystemOut.print_decisions )
 			System.out.println(debugMessage);
@@ -440,7 +440,7 @@ public class ExploreUtils {
 	//	if(SystemOut.print_decisions)
 		//	System.out.println("[REAP][ExploreUtils] --> FORWARD("+forward_id+"): the expression \""+left+" "+comparator+" "+right+"\" is true.");
 
-		if(Core.boundMemory)
+		if(ReSPAConfig.boundMemory)
 			memoryBound();
 
 		return true;
@@ -452,7 +452,7 @@ public class ExploreUtils {
 	private boolean unhandled(int unhandled_id,Expression stmt, InputVariable iv, String logEntry) {
 
 		if(unhandledLog==null)
-			unhandledLog = new File(Core.target_project+"/unhandledLog.txt");
+			unhandledLog = new File(System.getProperty("user.dir")+"/.respa/tmp/unhandledLog.txt");
 
 		try{
 			FileWriter fw = new FileWriter(unhandledLog,true);
@@ -478,7 +478,7 @@ public class ExploreUtils {
 	private boolean unhandled(int unhandled_id,Expression stmt, String logEntry) {
 
 		if(unhandledLog==null)
-			unhandledLog = new File(Core.target_project+"/unhandledLog.txt");
+			unhandledLog = new File(System.getProperty("user.dir")+"/.respa/tmp/unhandledLog.txt");
 
 		try{
 			FileWriter fw = new FileWriter(unhandledLog,true);
@@ -648,7 +648,7 @@ public class ExploreUtils {
 
 	private int evalNumericInputCost(Comparator comparator,int constant) {
 
-		if(Core.intToChar)
+		if(ReSPAConfig.intToChar)
 			return 0;
 
 		String comparatorString = comparator.toString();
@@ -771,7 +771,7 @@ public class ExploreUtils {
 		String tostring = charat.toString();
 		String substring = tostring.substring(tostring.indexOf("buf"));
 		substring = substring.substring(0, substring.lastIndexOf("SYMSTRING")+9);
-		respa.input.InputVariable iv = Core.symbvars_.get(substring);
+		respa.input.InputVariable iv = ReSPAConfig.symbvars_.get(substring);
 
 		if(iv instanceof SymbolicInputString) {
 
@@ -779,7 +779,7 @@ public class ExploreUtils {
 
 				char [] value = new char[((SymbolicInputString) iv).getLength()];
 				for(int i=iv.getStartIndex(),j=0;i<iv.getStartIndex()+((SymbolicInputString) iv).getLength()&&j<value.length;i++,j++)
-					value[j]=Core.input[i];
+					value[j]=ReSPAConfig.input[i];
 
 				value = iv.getValue();//TODO do this a different way
 
@@ -820,14 +820,14 @@ public class ExploreUtils {
 		String tostring = length.toString();
 		String substring = tostring.substring(tostring.indexOf("buf"));
 		substring = substring.substring(0, substring.lastIndexOf("SYMSTRING")+9);
-		InputVariable iv = Core.symbvars_.get(substring);
+		InputVariable iv = ReSPAConfig.symbvars_.get(substring);
 
 
 		if(iv instanceof SymbolicInputString) {
 
 			char [] value = new char[((SymbolicInputString) iv).getLength()];
 			for(int i=iv.getStartIndex(),j=0;i<iv.getStartIndex()+((SymbolicInputString) iv).getLength()&&j<value.length;i++,j++)
-				value[j]=Core.input[i];
+				value[j]=ReSPAConfig.input[i];
 
 			value = iv.getValue();//TODO do this a different way
 
@@ -859,13 +859,13 @@ public class ExploreUtils {
 		String substring = tostring.substring(tostring.indexOf("buf"));
 		substring = substring.substring(0, substring.lastIndexOf("SYMSTRING")+9);//substring = substring.substring(0, substring.lastIndexOf("SYMSTRING")+9);
 
-		InputVariable iv = Core.symbvars_.get(substring);
+		InputVariable iv = ReSPAConfig.symbvars_.get(substring);
 
 		if(iv instanceof SymbolicInputString) {
 
 			char [] value = new char[((SymbolicInputString) iv).getLength()];
 			for(int i=iv.getStartIndex(),j=0;i<iv.getStartIndex()+((SymbolicInputString) iv).getLength()&&j<value.length;i++,j++)
-				value[j]=Core.input[i];
+				value[j]=ReSPAConfig.input[i];
 
 			value = iv.getValue();//TODO do this a different way
 
@@ -915,7 +915,7 @@ public class ExploreUtils {
 
 			String substring = tostring.substring(tostring.indexOf("buf"));
 			substring = substring.substring(0, substring.lastIndexOf("SYMSTRING")+9);
-			InputVariable iv = Core.symbvars_.get(substring);
+			InputVariable iv = ReSPAConfig.symbvars_.get(substring);
 			//if(iv instanceof SymbolicInputString) {
 
 			char [] value = iv.getValue();
@@ -963,7 +963,7 @@ public class ExploreUtils {
 		else if(tostring.contains("SYMINT")) {
 			String substring = tostring.substring(tostring.indexOf("buf"));
 			substring = substring.substring(0, substring.lastIndexOf("SYMINT")+6);
-			InputVariable iv = Core.symbvars_.get(substring);
+			InputVariable iv = ReSPAConfig.symbvars_.get(substring);
 			int value = ((SymbolicInputInt)iv).getValueAsInt();
 
 			int left= solveBinaryLinearIntExpression(value,((IntegerConstant)binconstant).value,binary.getOp());
@@ -991,7 +991,7 @@ public class ExploreUtils {
 
 	private boolean handle_SymbolicInteger() {
 
-		if(Core.automaticInputDetection) {
+		if(ReSPAConfig.automaticInputDetection) {
 
 			SymbolicInteger symbint = (SymbolicInteger)stmt; //dont want to cast all the time
 			String tostring = symbint.toString();
@@ -1000,7 +1000,7 @@ public class ExploreUtils {
 			if(substring.endsWith("]"))
 				substring = substring.substring(0, substring.lastIndexOf("["));
 
-			InputVariable iv = Core.symbvars_.get(substring);
+			InputVariable iv = ReSPAConfig.symbvars_.get(substring);
 
 			if(iv instanceof SymbolicInputInt){
 				int value=((SymbolicInputInt)iv).getValueAsInt();
@@ -1028,7 +1028,7 @@ public class ExploreUtils {
 			SymbolicInteger strsymb = (SymbolicInteger)stmt; //dont want to cast all the time
 			String tostring = strsymb.toString();
 			String substring = tostring.substring(tostring.indexOf("buf"));
-			InputVariable iv = Core.symbvars_.get(substring);
+			InputVariable iv = ReSPAConfig.symbvars_.get(substring);
 			if(iv==null)
 				return unhandled(20,stmt,iv,"Source File Location: "+insn.getFileLocation());
 
@@ -1093,23 +1093,23 @@ public class ExploreUtils {
 		String tostring = charat.toString();
 		String substring = tostring.substring(tostring.indexOf("buf"));
 		substring = substring.substring(0, substring.lastIndexOf("["));
-		InputVariable iv1 = Core.symbvars_.get(substring);
+		InputVariable iv1 = ReSPAConfig.symbvars_.get(substring);
 
 		SymbolicCharAtInteger charat2 = (SymbolicCharAtInteger)constant; 
 		String tostring2 = charat2.toString();
 		String substring2 = tostring2.substring(tostring2.indexOf("buf"));
 		substring2 = substring2.substring(0, substring2.lastIndexOf("["));
-		InputVariable iv2 = Core.symbvars_.get(substring2);
+		InputVariable iv2 = ReSPAConfig.symbvars_.get(substring2);
 
 		if(iv1 instanceof SymbolicInputString && iv2 instanceof SymbolicInputString) {
 
 			char [] value1 = new char[((SymbolicInputString) iv1).getLength()];
 			for(int i=iv1.getStartIndex(),j=0;i<iv1.getStartIndex()+((SymbolicInputString) iv1).getLength()&&j<value1.length;i++,j++)
-				value1[j]=Core.input[i];
+				value1[j]=ReSPAConfig.input[i];
 
 			char [] value2 = new char[((SymbolicInputString) iv2).getLength()];
 			for(int i=iv2.getStartIndex(),j=0;i<iv2.getStartIndex()+((SymbolicInputString) iv2).getLength()&&j<value2.length;i++,j++)
-				value2[j]=Core.input[i];
+				value2[j]=ReSPAConfig.input[i];
 
 			int left= (int)iv1.getValue()[((IntegerConstant)charat.index).value];//TODO do this a different way
 			int right = (int)iv2.getValue()[((IntegerConstant)charat2.index).value];//TODO do this a different way
@@ -1147,13 +1147,13 @@ public class ExploreUtils {
 	 */
 	private boolean handle_StringSymbolic() {
 
-		if(Core.automaticInputDetection) {
+		if(ReSPAConfig.automaticInputDetection) {
 
 			StringSymbolic strsymb = (StringSymbolic)stmt; //dont want to cast all the time
 			String tostring = strsymb.toString();
 			String substring = tostring.substring(tostring.indexOf("buf"));
 			substring = substring.substring(0, substring.lastIndexOf("SYMSTRING")+9);
-			InputVariable iv = Core.symbvars_.get(substring);
+			InputVariable iv = ReSPAConfig.symbvars_.get(substring);
 
 
 			if(iv instanceof SymbolicInputString) {
@@ -1181,7 +1181,7 @@ public class ExploreUtils {
 			String tostring = strsymb.toString();
 			String substring = tostring.substring(tostring.indexOf("buf"));
 			substring = substring.substring(0, substring.lastIndexOf("SYMSTRING")+9);
-			InputLocation il = Core.inputLocationsSet_.get(substring);
+			InputLocation il = ReSPAConfig.inputLocationsSet_.get(substring);
 
 			if(il!=null){
 
@@ -1213,19 +1213,19 @@ public class ExploreUtils {
 	 */
 	private boolean handle_BinaryStringSymbolic() {
 
-		if(Core.automaticInputDetection) {
+		if(ReSPAConfig.automaticInputDetection) {
 
 			StringSymbolic strsymb = (StringSymbolic)stmt; //dont want to cast all the time
 			String tostring = strsymb.toString();
 			String substring = tostring.substring(tostring.indexOf("buf"));
 			substring = substring.substring(0, substring.lastIndexOf("SYMSTRING")+9);
-			InputVariable iv1 = Core.symbvars_.get(substring);
+			InputVariable iv1 = ReSPAConfig.symbvars_.get(substring);
 
 			strsymb = (StringSymbolic)constant;
 			tostring = strsymb.toString();
 			substring = tostring.substring(tostring.indexOf("buf"));
 			substring = substring.substring(0, substring.lastIndexOf("SYMSTRING")+9);
-			InputVariable iv2 = Core.symbvars_.get(substring);
+			InputVariable iv2 = ReSPAConfig.symbvars_.get(substring);
 
 			if(iv1==null||iv2==null)
 				return unhandled(1645,stmt,"Source File Location: "+insn.getFileLocation()+
@@ -1256,13 +1256,13 @@ public class ExploreUtils {
 			String tostring = strsymb.toString();
 			String substring = tostring.substring(tostring.indexOf("buf"));
 			substring = substring.substring(0, substring.lastIndexOf("SYMSTRING")+9);
-			InputLocation il1 = Core.inputLocationsSet_.get(substring);
+			InputLocation il1 = ReSPAConfig.inputLocationsSet_.get(substring);
 
 			strsymb = (StringSymbolic)constant;
 			tostring = strsymb.toString();
 			substring = tostring.substring(tostring.indexOf("buf"));
 			substring = substring.substring(0, substring.lastIndexOf("SYMSTRING")+9);
-			InputLocation il2 = Core.inputLocationsSet_.get(substring);
+			InputLocation il2 = ReSPAConfig.inputLocationsSet_.get(substring);
 
 			if(il1==null||il2==null)
 				return unhandled(1647,stmt,"Source File Location: "+insn.getFileLocation()+
@@ -1554,7 +1554,7 @@ public class ExploreUtils {
 		String tostring = charat.toString();
 		String substring = tostring.substring(tostring.indexOf("buf"));
 		substring = substring.substring(0, substring.lastIndexOf("SYMSTRING")+9);
-		respa.input.InputVariable iv = Core.symbvars_.get(substring);
+		respa.input.InputVariable iv = ReSPAConfig.symbvars_.get(substring);
 
 		if(iv instanceof SymbolicInputString) {
 

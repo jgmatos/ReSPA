@@ -287,22 +287,6 @@ public class Loader {
 	}
 
 
-	public static void getAWTFiles() {
-
-		try {
-
-			Runtime.getRuntime().exec("cp "+System.getProperty("user.home")+"/.reap/input.txt "+System.getProperty("user.dir"));
-
-			//TODO: fix this issue asap
-			Runtime.getRuntime().exec("cp "+System.getProperty("user.home")+"/.reap/awtscript.es "+System.getProperty("user.dir"));
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-
-
-	}
 
 
 

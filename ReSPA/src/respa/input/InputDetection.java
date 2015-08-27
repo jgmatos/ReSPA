@@ -14,7 +14,7 @@ import gov.nasa.jpf.jvm.bytecode.InvokeInstruction;
 import gov.nasa.jpf.symbc.bytecode.BytecodeUtils;
 import gov.nasa.jpf.symbc.bytecode.BytecodeUtils.VarType;
 import gov.nasa.jpf.symbc.numeric.SymbolicInteger;
-import respa.main.Core;
+import respa.main.ReSPAConfig;
 import respa.output.SystemOut;
 import respa.stateLabeling.Location;
 import gov.nasa.jpf.symbc.string.StringSymbolic;
@@ -262,13 +262,13 @@ public class InputDetection {
 			if(di.getType().equals("[C")){
 				InputBuffer buf = new InputBuffer();
 				buf.buffer = di.getArrayFields().asCharArray();
-				Core.input = di.getArrayFields().asCharArray();
+				ReSPAConfig.input = di.getArrayFields().asCharArray();
 //				if(Core.singleInputSource){
-					if(Core.inputBuffer==null)
-						Core.inputBuffer=buf;
+					if(ReSPAConfig.inputBuffer==null)
+						ReSPAConfig.inputBuffer=buf;
 		//		}
 	//			else
-					Core.inputbuffers.add(buf);
+					ReSPAConfig.inputbuffers.add(buf);
 			
 			
 			}
@@ -280,17 +280,17 @@ public class InputDetection {
 	public void handleReadTokens(gov.nasa.jpf.jvm.bytecode.InvokeInstruction invoke) {
 
 
-		if(Core.inputbuffers.size()==0 || 
-				!(Core.inputbuffers.get(Core.inputbuffers.size()-1) instanceof InputTokens)){
+		if(ReSPAConfig.inputbuffers.size()==0 || 
+				!(ReSPAConfig.inputbuffers.get(ReSPAConfig.inputbuffers.size()-1) instanceof InputTokens)){
 
 			InputTokens il = new InputTokens();
 
-			String inputString = String.valueOf(Core.input);
+			String inputString = String.valueOf(ReSPAConfig.input);
 			Scanner scan = new Scanner(inputString);
 			while(scan.hasNextLine())
 				il.tokens.add(scan.nextLine());
 
-			Core.inputbuffers.add(il);
+			ReSPAConfig.inputbuffers.add(il);
 
 			scan.close();
 
@@ -301,11 +301,11 @@ public class InputDetection {
 
 	public void handleReadSingleChar(gov.nasa.jpf.jvm.bytecode.InvokeInstruction invoke) {
 
-		if(Core.inputbuffers.size()==0 || 
-				!(Core.inputbuffers.get(Core.inputbuffers.size()-1) instanceof InputChars)){
+		if(ReSPAConfig.inputbuffers.size()==0 || 
+				!(ReSPAConfig.inputbuffers.get(ReSPAConfig.inputbuffers.size()-1) instanceof InputChars)){
 
 			InputChars il = new InputChars();
-			Core.inputbuffers.add(il);
+			ReSPAConfig.inputbuffers.add(il);
 
 		}
 
@@ -313,17 +313,17 @@ public class InputDetection {
 
 	public void handleReadInt(gov.nasa.jpf.jvm.bytecode.InvokeInstruction invoke) {
 
-		if(Core.inputbuffers.size()==0 || 
-				!(Core.inputbuffers.get(Core.inputbuffers.size()-1) instanceof InputInt)){
+		if(ReSPAConfig.inputbuffers.size()==0 || 
+				!(ReSPAConfig.inputbuffers.get(ReSPAConfig.inputbuffers.size()-1) instanceof InputInt)){
 
 			InputInt il = new InputInt();
-			Core.inputbuffers.add(il);
+			ReSPAConfig.inputbuffers.add(il);
 
 		}
 
-		if(Core.inputbuffers.get(Core.inputbuffers.size()-1) instanceof InputInt){
+		if(ReSPAConfig.inputbuffers.get(ReSPAConfig.inputbuffers.size()-1) instanceof InputInt){
 
-			((InputInt)Core.inputbuffers.get(Core.inputbuffers.size()-1)).buffer.add(1);//TODO: find a way to determine the input
+			((InputInt)ReSPAConfig.inputbuffers.get(ReSPAConfig.inputbuffers.size()-1)).buffer.add(1);//TODO: find a way to determine the input
 
 		}
 
@@ -761,17 +761,17 @@ public class InputDetection {
 
 			if(accepting) {
 
-				if(sf.getType().equals("java.lang.String")&&Core.symbString) {
+				if(sf.getType().equals("java.lang.String")&&ReSPAConfig.symbString) {
 
 
 
 					SymbolicInputString sis = (SymbolicInputString)getSymbVarValue();
-					InputVariable sis_ = Core.symbvars.get(sis.toString());
+					InputVariable sis_ = ReSPAConfig.symbvars.get(sis.toString());
 					
 					if((sis_==null || sis.getLength()==-1)&&accepting) {
 
 						String name;
-						if(Core.singleInputSource)
+						if(ReSPAConfig.singleInputSource)
 							name = "buf["+sis.getStartIndex()+"-"+(sis.getLength()+sis.getStartIndex()-1)+"]";
 						else
 							name = "buf"+sis.getBuffer()+"["+sis.getStartIndex()+"-"+(sis.getLength()+sis.getStartIndex()-1)+"]";
@@ -782,14 +782,14 @@ public class InputDetection {
 						vm.getCurrentThread().getTopFrame().setOperandAttr(sym_v);
 
 						sis.setSym(sym_v);
-						Core.symbvars.put(sis.toString(),sis);
+						ReSPAConfig.symbvars.put(sis.toString(),sis);
 						if(SystemOut.print_new_symb)
 							System.out.println("[REAP][InputDetection] --> New Symbolic Variable: "+sym_v+"; Value to anonymize: "+sis.getValueAsString()+" ; Location: "+currentL.l);
 
 
-						Core.symbvars_.put(symbname, sis);//makes it easier
+						ReSPAConfig.symbvars_.put(symbname, sis);//makes it easier
 
-						InputBuffer ib = Core.inputbuffers.get(Core.inputbuffers.size()-1);
+						InputBuffer ib = ReSPAConfig.inputbuffers.get(ReSPAConfig.inputbuffers.size()-1);
 
 
 						if(ib instanceof InputTokens)
@@ -810,18 +810,18 @@ public class InputDetection {
 				else if(sf.getType().equals("char")) {
 
 					ConcreteInputChar cic = (ConcreteInputChar)getSymbVarValue();
-					InputVariable cic_ = Core.symbvars.get(cic.toString());
+					InputVariable cic_ = ReSPAConfig.symbvars.get(cic.toString());
 					if(cic_==null){
 
 
-						Core.symbvars.put(cic.toString(),cic);
+						ReSPAConfig.symbvars.put(cic.toString(),cic);
 						//		this.symbolicFields.add(sf);
 						//	System.out.println("Disclosed Char: buf"+cic.getBuffer()+"["+cic.getStartIndex()+"] = "+cic.getValueAsString()+" ;; "+Integer.valueOf(cic.getValue()[0]));
 
 					}
 
 				}
-				else if(sf.getType().equals("int")&&Core.symbInt){
+				else if(sf.getType().equals("int")&&ReSPAConfig.symbInt){
 					//TODO: use a flag to determine if we want to use this functionality
 					//for xerces this does not work well
 
@@ -833,11 +833,11 @@ public class InputDetection {
 			}*/
 
 					SymbolicInputInt si = (SymbolicInputInt)getSymbVarValue();
-					InputVariable si_ = Core.symbvars.get(si.toString());
+					InputVariable si_ = ReSPAConfig.symbvars.get(si.toString());
 					if(si_==null){
 
 						String name;
-						if(Core.singleInputSource)
+						if(ReSPAConfig.singleInputSource)
 							name = "buf["+si.getStartIndex()+"]";
 						else
 							name = "buf"+si.getBuffer()+"["+si.getStartIndex()+"]";
@@ -850,14 +850,14 @@ public class InputDetection {
 						
 						if(SystemOut.print_new_symb)
 							System.out.println("[REAP][InputDetection] --> New Symbolic Variable: "+sym_v+"; Value to anonymize: "+si.getValueAsInt()+"; Location: "+currentL.l);
-						Core.symbvars_.put(symbname, si);
-						Core.symbvars.put(si.toString(),si);
+						ReSPAConfig.symbvars_.put(symbname, si);
+						ReSPAConfig.symbvars.put(si.toString(),si);
 
 					}
 
 				}
 
-				Core.runningConcrete = false;
+				ReSPAConfig.runningConcrete = false;
 
 			}
 
@@ -900,19 +900,19 @@ public class InputDetection {
 				}
 
 
-				InputBuffer buf = Core.inputbuffers.get(Core.inputbuffers.size()-1);
+				InputBuffer buf = ReSPAConfig.inputbuffers.get(ReSPAConfig.inputbuffers.size()-1);
 				if(insn.toString().contains("readLine")) {
 					//System.out.println("MAGIA: "+insn.getFileLocation());
 					//					System.out.println("banhada: "+vm.getCurrentThread().getStackTrace());
-					if(Core.inputbuffers.size()>0){
+					if(ReSPAConfig.inputbuffers.size()>0){
 
-						InputBuffer ib = Core.inputbuffers.get(Core.inputbuffers.size()-1);
+						InputBuffer ib = ReSPAConfig.inputbuffers.get(ReSPAConfig.inputbuffers.size()-1);
 
 						if(ib instanceof InputTokens) {
 
 							InputTokens il = (InputTokens) ib;
 							il.lineCount++;
-							SymbolicInputString sis = new SymbolicInputString(il.lineCount,-1,Core.inputbuffers.size()-1);
+							SymbolicInputString sis = new SymbolicInputString(il.lineCount,-1,ReSPAConfig.inputbuffers.size()-1);
 
 							if(il.tokens.size()<=il.lineCount){
 								sis.setValue("unknown for now");
@@ -944,11 +944,11 @@ public class InputDetection {
 			}
 			else if(insn instanceof gov.nasa.jpf.jvm.bytecode.CALOAD) {//for now we do not support this
 
-				InputBuffer buf = Core.inputbuffers.get(Core.inputbuffers.size()-1);
+				InputBuffer buf = ReSPAConfig.inputbuffers.get(ReSPAConfig.inputbuffers.size()-1);
 				int index = ((gov.nasa.jpf.jvm.bytecode.CALOAD)insn).getIndex(vm.getCurrentThread());
 				ConcreteInputChar cic = new ConcreteInputChar(
 						index,
-						Core.inputbuffers.size()-1, 
+						ReSPAConfig.inputbuffers.size()-1, 
 						buf.buffer[index]);
 
 
@@ -958,15 +958,15 @@ public class InputDetection {
 			else if(insn instanceof gov.nasa.jpf.jvm.bytecode.ASTORE) {
 				//	System.out.println("BANHADA: "+insn.getClass()+" ;; "+insn.getFileLocation()+" ;; "+Core.inputbuffers.size());
 
-				if(Core.inputbuffers.size()>0){
+				if(ReSPAConfig.inputbuffers.size()>0){
 
-					InputBuffer ib = Core.inputbuffers.get(Core.inputbuffers.size()-1);
+					InputBuffer ib = ReSPAConfig.inputbuffers.get(ReSPAConfig.inputbuffers.size()-1);
 
 					if(ib instanceof InputTokens) {
 
 						InputTokens il = (InputTokens) ib;
 						il.lineCount++;
-						SymbolicInputString sis = new SymbolicInputString(il.lineCount,-1,Core.inputbuffers.size()-1);
+						SymbolicInputString sis = new SymbolicInputString(il.lineCount,-1,ReSPAConfig.inputbuffers.size()-1);
 						//sis.setValue("unknown for now");
 						if(il.tokens.size()<il.lineCount){
 							sis.setValue("unknown for now");
@@ -985,15 +985,15 @@ public class InputDetection {
 			else if(insn instanceof gov.nasa.jpf.jvm.bytecode.ISTORE) {
 				//	System.out.println("BANHADA: "+insn.getClass()+" ;; "+insn.getFileLocation()+" ;; "+Core.inputbuffers.size());
 
-				if(Core.inputbuffers.size()>0){
+				if(ReSPAConfig.inputbuffers.size()>0){
 
-					InputBuffer ic = Core.inputbuffers.get(Core.inputbuffers.size()-1);
+					InputBuffer ic = ReSPAConfig.inputbuffers.get(ReSPAConfig.inputbuffers.size()-1);
 
 					if(ic instanceof InputChars) {
 
 						InputChars il = (InputChars) ic;
 
-						SymbolicInputInt sii = new SymbolicInputInt(il.buffer.size(),Core.inputbuffers.size()-1);
+						SymbolicInputInt sii = new SymbolicInputInt(il.buffer.size(),ReSPAConfig.inputbuffers.size()-1);
 						sii.setValue(Integer.MIN_VALUE);
 
 						return sii;
@@ -1001,7 +1001,7 @@ public class InputDetection {
 					else if(ic instanceof InputInt) {
 
 						InputInt ii = (InputInt)ic;
-						SymbolicInputInt sii = new SymbolicInputInt(ii.buffer.size(),Core.inputbuffers.size()-1);
+						SymbolicInputInt sii = new SymbolicInputInt(ii.buffer.size(),ReSPAConfig.inputbuffers.size()-1);
 						sii.setValue(ii.buffer.get(ii.buffer.size()-1));
 
 						return sii;
@@ -1128,13 +1128,13 @@ public class InputDetection {
 		public void unCreate() {
 
 			if(lineCount>=0){
-				InputBuffer ib = Core.inputbuffers.get(Core.inputbuffers.size()-1);
+				InputBuffer ib = ReSPAConfig.inputbuffers.get(ReSPAConfig.inputbuffers.size()-1);
 				if(ib instanceof InputTokens)
 					((InputTokens)ib).lineCount = lineCount-1;
 			}
 
-			Core.symbvars.remove(symbvar);
-			Core.symbvars_.remove(symbvar_);
+			ReSPAConfig.symbvars.remove(symbvar);
+			ReSPAConfig.symbvars_.remove(symbvar_);
 
 		}
 

@@ -10,7 +10,7 @@ import java.util.Scanner;
 import respa.input.SymbolicInputInt;
 import respa.input.SymbolicInputString;
 import respa.leak.string.MeasureSingleString;
-import respa.main.Core;
+import respa.main.ReSPAConfig;
 
 
 /**
@@ -134,8 +134,8 @@ public class IndividualTokensOuput implements Output{
 					if(tokens.get(i).charAt(j)==newin[i].charAt(j))
 						residue++;
 
-			if(Core.residue_delimiters)
-				residue+=Core.delimiters;//residue+=(tokens.size()-1);
+			if(ReSPAConfig.residue_delimiters)
+				residue+=ReSPAConfig.delimiters;//residue+=(tokens.size()-1);
 
 		}
 
@@ -149,7 +149,7 @@ public class IndividualTokensOuput implements Output{
 		for(String s: tokens)
 			size +=s.length();
 
-		if(Core.residue_delimiters)
+		if(ReSPAConfig.residue_delimiters)
 			size+=(tokens.size()-1);
 
 		return size;

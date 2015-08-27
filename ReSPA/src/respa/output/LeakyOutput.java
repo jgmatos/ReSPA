@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import respa.leak.LeakyVariable;
-import respa.main.Core;
+import respa.main.ReSPAConfig;
 
 /**
  * Given an ordered Collection of LeakyVariables L, this class produces an ordered Collection of 
@@ -71,7 +71,7 @@ public class LeakyOutput implements Output{
 	
 		try {
 			
-			FileWriter fw = new FileWriter(new File(Core.target_project+"/alternativeInput.txt"));
+			FileWriter fw = new FileWriter(new File(System.getProperty("user.home")+"/.respa/tmp/alternativeInput.txt"));
 			fw.write(output);
 			fw.flush();
 			fw.close();
@@ -90,8 +90,8 @@ public class LeakyOutput implements Output{
 
 		int residue = 0;
 		
-		for(int i=0; i<output.length()&&i<Core.input.length; i++){
-			if(output.charAt(i)==Core.input[i])
+		for(int i=0; i<output.length()&&i<ReSPAConfig.input.length; i++){
+			if(output.charAt(i)==ReSPAConfig.input[i])
 				residue++;
 		}
 		

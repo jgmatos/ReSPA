@@ -3,7 +3,7 @@ package respa.output;
 import java.io.FileWriter;
 
 import respa.input.CharUtils;
-import respa.main.Core;
+import respa.main.ReSPAConfig;
 
 
 /**
@@ -49,7 +49,7 @@ public final class XMLOutput extends BreakableOutput {
 				if(!CharUtils.unsupportedXmlChar(content.charAt(i)))
 					filtered+=content.charAt(i);
 
-			if(Core.inputType.equals("xml")){
+			if(ReSPAConfig.inputType.equals("xml")){
 
 				for(int i=0;i<filtered.length();i++)
 					if(CharUtils.unsupportedXmlChar(filtered.charAt(i)))
@@ -128,8 +128,8 @@ public final class XMLOutput extends BreakableOutput {
 				residue+=dummy.block.length();
 			}
 			else{//anonymized blocks
-				for(int j=0;j<dummy.block.length()&&j<Core.input.length;j++){
-					if(dummy.block.charAt(j)==Core.input[dummy.offset+j]){
+				for(int j=0;j<dummy.block.length()&&j<ReSPAConfig.input.length;j++){
+					if(dummy.block.charAt(j)==ReSPAConfig.input[dummy.offset+j]){
 						residue++;
 					}
 				}

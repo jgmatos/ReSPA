@@ -9,7 +9,7 @@ import respa.input.InputVariable;
 import respa.input.SymbolicInputInt;
 import respa.input.SymbolicInputString;
 import respa.leak.MultiLeakyPath;
-import respa.main.Core;
+import respa.main.ReSPAConfig;
 import respa.output.solve.ConsoleSolver;
 import respa.output.solve.Solver;
 import respa.output.solve.XMLSolver;
@@ -28,9 +28,6 @@ public class OutputManager {
 
 
 
-	private String alternativeInputFile;
-	private String alternativeInputFileExtension;
-	private String alternativeInputDir;
 
 	private String outputFile;
 
@@ -41,15 +38,10 @@ public class OutputManager {
 
 		try{
 
-			this.alternativeInputFile = Core.properties.getProperty("alternative_input");
-			this.alternativeInputFileExtension = Core.properties.getProperty("file_extension");
-			this.alternativeInputDir = Core.properties.getProperty("alternative_input_dir");
-
-			if(this.alternativeInputDir.equalsIgnoreCase("default"))
-				this.alternativeInputDir = Core.target_project;
 
 
-			outputFile = this.alternativeInputDir+"/"+this.alternativeInputFile+"."+this.alternativeInputFileExtension;
+
+			outputFile = System.getProperty("user.dir")+"/.respa/tmp/altenativeInput.txt";
 
 
 
@@ -78,7 +70,7 @@ public class OutputManager {
 
 
 
-		if(Core.inputType.equals("xml")){
+		if(ReSPAConfig.inputType.equals("xml")){
 			solver = new XMLSolver();
 			solver.solve(pc);
 		}
@@ -96,19 +88,18 @@ public class OutputManager {
 		output = new LeakyOutput(solver.getLeakyPath().getLeakyVars());
 
 		output.printToFile(outputFile);
-		if(SystemOut.print_new_input)
-			output.printToSystemin();
+		output.printToSystemin();
 
-		if(Core.residue){
+		if(ReSPAConfig.residue){
 			int residue = output.getResidue();
-			System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(Core.totalChars))*100+"%");
+			System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(ReSPAConfig.totalChars))*100+"%");
 			OutputManager.residue = residue;
-			OutputManager.residuePercent = (double)((Double.valueOf(residue)/Double.valueOf(Core.totalChars))*100);
+			OutputManager.residuePercent = (double)((Double.valueOf(residue)/Double.valueOf(ReSPAConfig.totalChars))*100);
 		}
 
-		System.out.println("[ReSPA][OutputManager] -->  Leakage: "+rleak+" bits; "+(rleak/8)+" Bytes; "+(rleak/(8.0*((double)Core.totalBytes)))*100.0+"%");
+		System.out.println("[ReSPA][OutputManager] -->  Leakage: "+rleak+" bits; "+(rleak/8)+" Bytes; "+(rleak/(8.0*((double)ReSPAConfig.totalBytes)))*100.0+"%");
 		OutputManager.rleak=rleak;
-		OutputManager.rleakPercent=(rleak/(8.0*((double)Core.totalBytes)))*100.0;
+		OutputManager.rleakPercent=(rleak/(8.0*((double)ReSPAConfig.totalBytes)))*100.0;
 
 	}
 
@@ -124,20 +115,19 @@ public class OutputManager {
 
 		Solver solver;
 		Output output;
-		HashMap<String, InputVariable> map;
+		//HashMap<String, InputVariable> map;
 
 
-		PathCondition outputpath =  Core.allPaths.get(Core.allPaths.size()-1);
+		PathCondition outputpath =  ReSPAConfig.allPaths.get(ReSPAConfig.allPaths.size()-1);
 
-		if(Core.inputType.equals("xml")){
+		if(ReSPAConfig.inputType.equals("xml")){
 			solver = new XMLSolver();
-			map = solver.solve(outputpath);
+		    solver.solve(outputpath);
 		}
 		else{ 
 			solver = new ConsoleSolver();
-			map = solver.solve(outputpath);
+			solver.solve(outputpath);
 		}
-		//TODO: why do we need map?
 
 
 
@@ -146,15 +136,14 @@ public class OutputManager {
 		output = new LeakyOutput(solver.getLeakyPath().getLeakyVars());
 
 		output.printToFile(outputFile);
-		if(SystemOut.print_new_input)
 			output.printToSystemin();
 
-		if(Core.residue){
+		if(ReSPAConfig.residue){
 			int residue = output.getResidue();
-			System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(Core.totalChars))*100+"%");
+			System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(ReSPAConfig.totalChars))*100+"%");
 		}
 
-		System.out.println("[ReSPA][OutputManager] -->  Leakage: "+leak+" bits; "+(leak/8)+" Bytes; "+(leak/(8.0*((double)Core.totalBytes)))*100.0+"%");
+		System.out.println("[ReSPA][OutputManager] -->  Leakage: "+leak+" bits; "+(leak/8)+" Bytes; "+(leak/(8.0*((double)ReSPAConfig.totalBytes)))*100.0+"%");
 
 	}
 
@@ -167,9 +156,9 @@ public class OutputManager {
 		HashMap<String, InputVariable> map;
 
 
-		PathCondition outputpath = Core.allPaths.get(0);
+		PathCondition outputpath = ReSPAConfig.allPaths.get(0);
 
-		if(Core.inputType.equals("xml")){
+		if(ReSPAConfig.inputType.equals("xml")){
 			solver = new XMLSolver();
 			map = solver.solve(outputpath);
 			output = (XMLOutput)solver.construct(map);
@@ -184,9 +173,9 @@ public class OutputManager {
 
 
 
-		outputpath = Core.allPaths.get(Core.allPaths.size()-1);
+		outputpath = ReSPAConfig.allPaths.get(ReSPAConfig.allPaths.size()-1);
 
-		if(Core.inputType.equals("xml")){
+		if(ReSPAConfig.inputType.equals("xml")){
 			solver = new XMLSolver();
 			map = solver.solve(outputpath);
 			output = (XMLOutput)solver.construct(map);
@@ -198,20 +187,19 @@ public class OutputManager {
 		}
 
 		output.printToFile(outputFile);
-		if(SystemOut.print_new_input)
 			output.printToSystemin();
 
 
 
 		double leak = solver.getLeakyPath().getFastLeak();
 
-		if(Core.residue){
+		if(ReSPAConfig.residue){
 			int residue = output.getResidue();
-			System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(Core.totalChars))*100+"%");
+			System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(ReSPAConfig.totalChars))*100+"%");
 		}
 
-		System.out.println("[ReSPA][OutputManager] -->  Leakage: "+leak+" bits; "+(leak/8)+" Bytes; "+(leak/(8.0*((double)Core.totalBytes)))*100.0+"%");
-		System.out.println("[ReSPA][OutputManager] --> OIA Leakage: "+oialeak+" bits; "+(oialeak/8)+" Bytes; "+(oialeak/(8.0*((double)Core.totalBytes)))*100.0+"%");
+		System.out.println("[ReSPA][OutputManager] -->  Leakage: "+leak+" bits; "+(leak/8)+" Bytes; "+(leak/(8.0*((double)ReSPAConfig.totalBytes)))*100.0+"%");
+		System.out.println("[ReSPA][OutputManager] --> OIA Leakage: "+oialeak+" bits; "+(oialeak/8)+" Bytes; "+(oialeak/(8.0*((double)ReSPAConfig.totalBytes)))*100.0+"%");
 
 	}
 
@@ -225,7 +213,7 @@ public class OutputManager {
 		Solver solver;
 		Output output;
 		HashMap<String, InputVariable> map;
-		double additionalleak = 0.0;
+		//double additionalleak = 0.0;
 
 
 		//sort a path amongs the ones found
@@ -240,37 +228,36 @@ public class OutputManager {
 		Random pathsorter = new Random();
 		PathCondition outputpath;
 
-		outputpath = Core.allPaths.get(pathsorter.nextInt(Core.allPaths.size()));
+		outputpath = ReSPAConfig.allPaths.get(pathsorter.nextInt(ReSPAConfig.allPaths.size()));
 
 
 
 		//create the output
-		if(Core.inputType.equals("xml")){
+		if(ReSPAConfig.inputType.equals("xml")){
 			solver = new XMLSolver();
 			map = solver.solve(outputpath);
 			output = (XMLOutput)solver.construct(map);
-			additionalleak = ((XMLOutput)output).getBitsNonAnonymized();
+		//	additionalleak = ((XMLOutput)output).getBitsNonAnonymized();
 		}
 		else{ 
 			solver = new ConsoleSolver();
 			map = solver.solve(outputpath);
 			output = (IndividualTokensOuput)solver.construct(map);
-			if(Core.residue_delimiters)
-				additionalleak=Core.delimiters;
+			//if(ReSPAConfig.residue_delimiters)
+			//	additionalleak=ReSPAConfig.delimiters;
 		}
 
 
 
 		//print the output: uncomment this later
 		output.printToFile(outputFile);
-		if(SystemOut.print_new_input)
 			output.printToSystemin();
 
 
 
-		if(Core.residue){
+		if(ReSPAConfig.residue){
 			int residue = output.getResidue();
-			System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(Core.totalChars))*100+"%");
+			System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(ReSPAConfig.totalChars))*100+"%");
 			//Logger.addResidue(residue);
 			//Logger.addResiduePercentage((double)((Double.valueOf(residue)/Double.valueOf(Core.totalChars))*100));	
 		}
@@ -278,7 +265,7 @@ public class OutputManager {
 
 
 		//measure leak
-		if(Core.measure_leak){
+		if(ReSPAConfig.measure_leak){
 
 			MultiLeakyPath mlp = new MultiLeakyPath();
 			double leak;
@@ -286,12 +273,12 @@ public class OutputManager {
 
 
 			//first measure for the oia phase only
-			if(Core.inputType.equals("xml"))
+			if(ReSPAConfig.inputType.equals("xml"))
 				solver = new XMLSolver();
 			else
 				solver = new ConsoleSolver();
-			map = solver.solve(Core.allPaths.get(0));
-			if(Core.var_type.equals("int"))
+			map = solver.solve(ReSPAConfig.allPaths.get(0));
+			if(ReSPAConfig.var_type.equals("int"))
 				leak = solver.getLeakyPath().getLeakage();
 			else
 				leak = solver.getLeakyPath().getFactorizedLeakage();
@@ -306,20 +293,20 @@ public class OutputManager {
 			mlp.add(solver.getLeakyPath());
 
 			//now measure for the union of all paths found
-			for(int i=1;i<Core.allPaths.size(); i++) {
-				if(Core.inputType.equals("xml"))
+			for(int i=1;i<ReSPAConfig.allPaths.size(); i++) {
+				if(ReSPAConfig.inputType.equals("xml"))
 					solver = new XMLSolver();
 				else
 					solver = new ConsoleSolver();
 
-				map = solver.solve(Core.allPaths.get(i));
+				map = solver.solve(ReSPAConfig.allPaths.get(i));
 
 				rleak = solver.getLeakyPath().getFactorizedLeakage();
 
 				mlp.add(solver.getLeakyPath());
 			}
 
-			if(Core.var_type.equals("int"))
+			if(ReSPAConfig.var_type.equals("int"))
 				leak = mlp.getLeakage();
 			else
 				leak = mlp.getFactorizedLeak();//mlp.getFactorizedLeak();
@@ -330,8 +317,8 @@ public class OutputManager {
 			//			leak += (additionalleak*8);
 			//		Logger.addLeak(leak);
 			//		Logger.addLeakPercentage((leak/(8.0*((double)Core.totalBytes)))*100.0);
-			System.out.println("[ReSPA][OutputManager] --> Leakage: "+leak+" bits; "+(leak/8)+" Bytes; "+(leak/(8.0*((double)Core.totalBytes)))*100.0+"%");
-			System.out.println("[ReSPA][OutputManager] --> Paths found: "+Core.allPaths.size());
+			System.out.println("[ReSPA][OutputManager] --> Leakage: "+leak+" bits; "+(leak/8)+" Bytes; "+(leak/(8.0*((double)ReSPAConfig.totalBytes)))*100.0+"%");
+			System.out.println("[ReSPA][OutputManager] --> Paths found: "+ReSPAConfig.allPaths.size());
 
 		}
 
@@ -359,19 +346,19 @@ public class OutputManager {
 		Solver solver;
 
 
-		if(Core.inputType.equals("xml")){
+		if(ReSPAConfig.inputType.equals("xml")){
 
 			XMLSolver oiaSolver = new XMLSolver();
-			HashMap<String, InputVariable> mapOIA = oiaSolver.solve(Core.previousPathCondition);
+			HashMap<String, InputVariable> mapOIA = oiaSolver.solve(ReSPAConfig.previousPathCondition);
 			MultiLeakyPath mlp = new MultiLeakyPath();
 			mlp.add(oiaSolver.getLeakyPath());
 
 			XMLOutput output;
 
-			if(Core.currentPathCondition!=null) {
+			if(ReSPAConfig.currentPathCondition!=null) {
 
 				solver = new XMLSolver();
-				HashMap<String, InputVariable> map = solver.solve(Core.currentPathCondition);
+				HashMap<String, InputVariable> map = solver.solve(ReSPAConfig.currentPathCondition);
 				mlp.add(solver.getLeakyPath());
 
 
@@ -379,14 +366,13 @@ public class OutputManager {
 
 				output = (XMLOutput)solver.construct(map);
 
-				if(SystemOut.print_new_input)
 					output.printToSystemin();
 
 				output.printToFile(outputFile);
 
-				if(Core.residue){
+				if(ReSPAConfig.residue){
 					int residue = output.getResidue();
-					System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(Core.totalChars))*100+"%");
+					System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(ReSPAConfig.totalChars))*100+"%");
 				}
 
 
@@ -395,22 +381,22 @@ public class OutputManager {
 
 				output = (XMLOutput)oiaSolver.construct(mapOIA);
 
-				if(Core.residue){
+				if(ReSPAConfig.residue){
 					int residue = output.getResidue();
-					System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(Core.totalChars))*100+"%");
+					System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(ReSPAConfig.totalChars))*100+"%");
 				}
 
 			}
 
-			if(Core.measure_leak){
+			if(ReSPAConfig.measure_leak){
 
 				double leak=mlp.getLeakage();
 
 				leak+=output.getBitsNonAnonymized();
-				System.out.println("[ReSPA][OutputManager] --> Leakage: "+leak+" bits; "+(leak/8)+" Bytes; "+(leak/(8*Core.totalBytes))*100+"%");
+				System.out.println("[ReSPA][OutputManager] --> Leakage: "+leak+" bits; "+(leak/8)+" Bytes; "+(leak/(8*ReSPAConfig.totalBytes))*100+"%");
 
 
-				double oiaLeak = (oiaSolver.getLeakyPath().getLeakage()+output.getBitsNonAnonymized());
+		//		double oiaLeak = (oiaSolver.getLeakyPath().getLeakage()+output.getBitsNonAnonymized());
 			}
 
 
@@ -418,25 +404,25 @@ public class OutputManager {
 
 
 		}
-		else if(Core.inputType.equals("console")) {
+		else if(ReSPAConfig.inputType.equals("console")) {
 
 			ConsoleSolver oiaSolver = new ConsoleSolver();
-			HashMap<String, InputVariable> mapOIA = oiaSolver.solve(Core.previousPathCondition);
+			HashMap<String, InputVariable> mapOIA = oiaSolver.solve(ReSPAConfig.previousPathCondition);
 			MultiLeakyPath mlp = new MultiLeakyPath();
 			mlp.add(oiaSolver.getLeakyPath());
 
 
-			if(Core.currentPathCondition!=null){
+			if(ReSPAConfig.currentPathCondition!=null){
 
 				solver = new ConsoleSolver();
-				HashMap<String, InputVariable> map = solver.solve(Core.currentPathCondition);
+				HashMap<String, InputVariable> map = solver.solve(ReSPAConfig.currentPathCondition);
 				mlp.add(solver.getLeakyPath());
 
 				IndividualTokensOuput output = (IndividualTokensOuput)solver.construct(map);
 
-				if(Core.residue){
+				if(ReSPAConfig.residue){
 					int residue = output.getResidue();
-					System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(Core.totalChars))*100+"%");
+					System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(ReSPAConfig.totalChars))*100+"%");
 				}
 
 			}
@@ -444,22 +430,22 @@ public class OutputManager {
 
 				IndividualTokensOuput output = (IndividualTokensOuput)oiaSolver.construct(mapOIA);
 
-				if(Core.residue){
+				if(ReSPAConfig.residue){
 					int residue = output.getResidue();
-					System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(Core.totalChars))*100+"%");
+					System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(ReSPAConfig.totalChars))*100+"%");
 				}
 
 			}
 
 
-			if(Core.measure_leak){
+			if(ReSPAConfig.measure_leak){
 				double leak = mlp.getLeakage();
-				if(Core.residue_delimiters)
-					leak+=Core.delimiters;
+				if(ReSPAConfig.residue_delimiters)
+					leak+=ReSPAConfig.delimiters;
 
-				System.out.println("[ReSPA][OutputManager] --> Leakage: "+leak+" bits; "+(leak/8)+" Bytes; "+(leak/(8*Core.totalBytes))*100+"% ");
+				System.out.println("[ReSPA][OutputManager] --> Leakage: "+leak+" bits; "+(leak/8)+" Bytes; "+(leak/(8*ReSPAConfig.totalBytes))*100+"% ");
 
-				double oiaLeak = (oiaSolver.getLeakyPath().getLeakage()+Core.delimiters);
+			//	double oiaLeak = (oiaSolver.getLeakyPath().getLeakage()+ReSPAConfig.delimiters);
 
 			}
 
@@ -467,28 +453,28 @@ public class OutputManager {
 
 
 		}
-		else if(Core.inputType.equals("txt")) {
+		else if(ReSPAConfig.inputType.equals("txt")) {
 
 
 
 			ConsoleSolver oiaSolver = new ConsoleSolver();
-			HashMap<String, InputVariable> mapOIA = oiaSolver.solve(Core.previousPathCondition);
+			HashMap<String, InputVariable> mapOIA = oiaSolver.solve(ReSPAConfig.previousPathCondition);
 			MultiLeakyPath mlp = new MultiLeakyPath();
 			mlp.add(oiaSolver.getLeakyPath());
 
 
 
-			if(Core.currentPathCondition!=null){
+			if(ReSPAConfig.currentPathCondition!=null){
 
 				solver = new ConsoleSolver();
-				HashMap<String, InputVariable> map = solver.solve(Core.currentPathCondition);
+				HashMap<String, InputVariable> map = solver.solve(ReSPAConfig.currentPathCondition);
 				mlp.add(solver.getLeakyPath());
 
 				IndividualTokensOuput output = (IndividualTokensOuput)solver.construct(map);
 
-				if(Core.residue){
+				if(ReSPAConfig.residue){
 					int residue = output.getResidue();
-					System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(Core.totalChars))*100+"%");
+					System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(ReSPAConfig.totalChars))*100+"%");
 				}
 
 			}
@@ -496,19 +482,19 @@ public class OutputManager {
 
 				IndividualTokensOuput output = (IndividualTokensOuput)oiaSolver.construct(mapOIA);
 
-				if(Core.residue){
+				if(ReSPAConfig.residue){
 					int residue = output.getResidue();
-					System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(Core.totalChars))*100+"%");
+					System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(ReSPAConfig.totalChars))*100+"%");
 				}
 
 			}
 
 
-			if(Core.measure_leak){
+			if(ReSPAConfig.measure_leak){
 				double leak = mlp.getLeakage();
-				System.out.println("[ReSPA][OutputManager] --> Leakage: "+leak+" bits; "+(leak/8)+" Bytes; "+(leak/(8*Core.totalBytes))*100+"% ");
+				System.out.println("[ReSPA][OutputManager] --> Leakage: "+leak+" bits; "+(leak/8)+" Bytes; "+(leak/(8*ReSPAConfig.totalBytes))*100+"% ");
 
-				double oiaLeak = (oiaSolver.getLeakyPath().getLeakage());
+		//		double oiaLeak = (oiaSolver.getLeakyPath().getLeakage());
 
 			}
 
@@ -538,7 +524,7 @@ public class OutputManager {
 
 
 
-
+	@SuppressWarnings({"unused", "deprecation"})
 	private double getLeakage(HashMap<String, InputVariable> map) {
 
 		double leak = 0.0;

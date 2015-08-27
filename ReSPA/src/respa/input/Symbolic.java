@@ -3,7 +3,7 @@ package respa.input;
 
 import java.util.ArrayList;
 
-import respa.main.Core;
+import respa.main.ReSPAConfig;
 import respa.output.SystemOut;
 import respa.utils.InputLocation;
 import gov.nasa.jpf.jvm.JVM;
@@ -35,26 +35,25 @@ public class Symbolic {
 
 		vm.getCurrentThread().getTopFrame().setOperandAttr(sym_v);
 
-		if(SystemOut.print_new_symb)
 			System.out.println("[ReSPA][Symbolic] --> NEW SYMBC Int: "+name+" -> "+sym_v+" ; "+
 					vm.getLastInstruction().getFileLocation()+" ; value to anonymize: "+il.value);
 
-		SymbolicInputInt sii = new SymbolicInputInt(Core.symbvars.size(),0);
-		InputVariable sii_ = Core.symbvars.get(sii.toString());
+		SymbolicInputInt sii = new SymbolicInputInt(ReSPAConfig.symbvars.size(),0);
+		InputVariable sii_ = ReSPAConfig.symbvars.get(sii.toString());
 
 		if(sii_==null || sii.getLength()==-1) {
 
 			sii.setSym((SymbolicInteger)sym_v);
 			sii.setValue(Integer.valueOf(il.value));
-			Core.symbvars.put(sii.toString(),sii);
+			ReSPAConfig.symbvars.put(sii.toString(),sii);
 
 		}
 
 
-		Core.runningConcrete=false;
-		Core.inputLocationsSet_.put(symbname, il);
-		Core.alreadyCreated.add(il);
-		Core.symbvars_.put(symbname, sii);//makes it easier
+		ReSPAConfig.runningConcrete=false;
+		ReSPAConfig.inputLocationsSet_.put(symbname, il);
+		ReSPAConfig.alreadyCreated.add(il);
+		ReSPAConfig.symbvars_.put(symbname, sii);//makes it easier
 		Symbolic.totalCreated++;
 		Symbolic.justCreated++;
 		
@@ -80,8 +79,8 @@ public class Symbolic {
 
 		currentStringSymbolic = sym_v;
 		
-		SymbolicInputString sis = new SymbolicInputString(Core.symbvars.size(),il.value.length(),0);
-		InputVariable sis_ = Core.symbvars.get(sis.toString());
+		SymbolicInputString sis = new SymbolicInputString(ReSPAConfig.symbvars.size(),il.value.length(),0);
+		InputVariable sis_ = ReSPAConfig.symbvars.get(sis.toString());
 
 		Symbolic.stringsymbolicvars.add(sym_v);
 		
@@ -89,15 +88,15 @@ public class Symbolic {
 
 			sis.setSym(sym_v);
 			sis.setValue(il.value);
-			sis.setOffset(Core.symbvars.size());
+			sis.setOffset(ReSPAConfig.symbvars.size());
 			sis.setLength(il.value.length());
-			Core.symbvars.put(sis.toString(),sis);
+			ReSPAConfig.symbvars.put(sis.toString(),sis);
 		}
 
-		Core.runningConcrete=false;
-		Core.inputLocationsSet_.put(symbname, il);
-		Core.alreadyCreated.add(il);
-		Core.symbvars_.put(symbname, sis);//makes it easier
+		ReSPAConfig.runningConcrete=false;
+		ReSPAConfig.inputLocationsSet_.put(symbname, il);
+		ReSPAConfig.alreadyCreated.add(il);
+		ReSPAConfig.symbvars_.put(symbname, sis);//makes it easier
 		Symbolic.totalCreated++;
 		Symbolic.justCreated++;
 	}
@@ -115,21 +114,21 @@ public class Symbolic {
 			System.out.println("[ReSPA][Symbolic] --> NEW SYMBC boolean: "+name+" -> "+sym_v+" ; "+
 					vm.getLastInstruction().getFileLocation()+" ; value to anonymize: "+il.value);
 
-		SymbolicInputInt sii = new SymbolicInputInt(Core.symbvars.size(),0);
-		InputVariable sii_ = Core.symbvars.get(sii.toString());
+		SymbolicInputInt sii = new SymbolicInputInt(ReSPAConfig.symbvars.size(),0);
+		InputVariable sii_ = ReSPAConfig.symbvars.get(sii.toString());
 
 		if(sii_==null || sii.getLength()==-1) {
 
 			sii.setSym((SymbolicInteger)sym_v);
 			sii.setValue(Integer.valueOf(il.value));
-			Core.symbvars.put(sii.toString(),sii);
+			ReSPAConfig.symbvars.put(sii.toString(),sii);
 
 		}
 
 
-		Core.runningConcrete=false;
-		Core.inputLocationsSet_.put(symbname, il);
-		Core.alreadyCreated.add(il);
+		ReSPAConfig.runningConcrete=false;
+		ReSPAConfig.inputLocationsSet_.put(symbname, il);
+		ReSPAConfig.alreadyCreated.add(il);
 		Symbolic.totalCreated++;
 		Symbolic.justCreated++;
 		
