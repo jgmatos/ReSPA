@@ -89,11 +89,11 @@ public class IndividualTokensOuput implements Output{
 
 			fw.flush();
 			fw.close();
-			System.out.println("[REAP][IndividualTokensOutput] --> Generated alternative input: "+file);
+			System.out.println("[ReSPA][IndividualTokensOutput] --> Generated alternative input: "+file);
 
 		}
 		catch(Exception e) {
-			System.out.println("[REAP][IndividualTokensOutput] --> The alternative input could not be printed to file");
+			System.out.println("[ReSPA][IndividualTokensOutput] --> The alternative input could not be printed to file");
 		}
 
 
@@ -115,7 +115,7 @@ public class IndividualTokensOuput implements Output{
 
 			oos.writeObject(ll);
 			oos.close();
-			System.out.println("[REAP][IndividualTokensOutput] --> Generated alternative input: "+file);
+			System.out.println("[ReSPA][IndividualTokensOutput] --> Generated alternative input: "+file);
 
 		}
 		catch(Exception e) {

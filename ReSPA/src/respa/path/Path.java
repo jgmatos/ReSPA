@@ -18,7 +18,7 @@ import respa.stateLabeling.VerboseMile;
 import respa.utils.LocationNode;
 
 /**
- *	This class implements a path represented by reap.stateLabeling.*
+ *	This class implements a path represented by respa.stateLabeling.*
  * 
  * @author Joao Matos / GSD INESC-ID
  *
@@ -369,7 +369,7 @@ public class Path {
 		}
 
 		if(SystemOut.print_loading)
-			System.out.println("[REAP][Path] --> loading complete: "+path.size()+" ;; "+miles.size()+" ;; "+states.size());
+			System.out.println("[ReSPA][Path] --> loading complete: "+path.size()+" ;; "+miles.size()+" ;; "+states.size());
 
 
 	}

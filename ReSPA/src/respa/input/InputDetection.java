@@ -784,7 +784,7 @@ public class InputDetection {
 						sis.setSym(sym_v);
 						ReSPAConfig.symbvars.put(sis.toString(),sis);
 						if(SystemOut.print_new_symb)
-							System.out.println("[REAP][InputDetection] --> New Symbolic Variable: "+sym_v+"; Value to anonymize: "+sis.getValueAsString()+" ; Location: "+currentL.l);
+							System.out.println("[ReSPA][InputDetection] --> New Symbolic Variable: "+sym_v+"; Value to anonymize: "+sis.getValueAsString()+" ; Location: "+currentL.l);
 
 
 						ReSPAConfig.symbvars_.put(symbname, sis);//makes it easier
@@ -849,7 +849,7 @@ public class InputDetection {
 						vm.getCurrentThread().getTopFrame().setOperandAttr(sym_v);
 						
 						if(SystemOut.print_new_symb)
-							System.out.println("[REAP][InputDetection] --> New Symbolic Variable: "+sym_v+"; Value to anonymize: "+si.getValueAsInt()+"; Location: "+currentL.l);
+							System.out.println("[ReSPA][InputDetection] --> New Symbolic Variable: "+sym_v+"; Value to anonymize: "+si.getValueAsInt()+"; Location: "+currentL.l);
 						ReSPAConfig.symbvars_.put(symbname, si);
 						ReSPAConfig.symbvars.put(si.toString(),si);
 

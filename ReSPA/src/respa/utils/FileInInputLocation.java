@@ -11,7 +11,6 @@ import java.util.Scanner;
 import respa.input.queuedInput;
 import respa.input.queuedInputInt;
 import respa.input.queuedInputString;
-import respa.main.ReSPAConfig;
 import respa.stateLabeling.Location;
 
 public class FileInInputLocation extends InputLocation{

@@ -419,7 +419,7 @@ public class ExploreUtils {
 	private boolean backtrack(int backtrack_id, String left, String comparator, String right) {
 
 	//	if(SystemOut.print_decisions)
-		//	System.out.println("[REAP][ExploreUtils] --> BACKTRACK("+backtrack_id+"): the expression \""+left+" "+comparator+" "+right+"\" is false.");
+		//	System.out.println("[ReSPA][ExploreUtils] --> BACKTRACK("+backtrack_id+"): the expression \""+left+" "+comparator+" "+right+"\" is false.");
 
 		backtracked.add(currentState);
 
@@ -438,7 +438,7 @@ public class ExploreUtils {
 
 
 	//	if(SystemOut.print_decisions)
-		//	System.out.println("[REAP][ExploreUtils] --> FORWARD("+forward_id+"): the expression \""+left+" "+comparator+" "+right+"\" is true.");
+		//	System.out.println("[ReSPA][ExploreUtils] --> FORWARD("+forward_id+"): the expression \""+left+" "+comparator+" "+right+"\" is true.");
 
 		if(ReSPAConfig.boundMemory)
 			memoryBound();
@@ -457,7 +457,7 @@ public class ExploreUtils {
 		try{
 			FileWriter fw = new FileWriter(unhandledLog,true);
 			fw.append("\n");
-			fw.append("[REAP][ExploreUtils][Unhandled] ::: id: "+unhandled_id+" ::: Expression type: "+stmt.getClass()+" ::: Expression:"+
+			fw.append("[ReSPA][ExploreUtils][Unhandled] ::: id: "+unhandled_id+" ::: Expression type: "+stmt.getClass()+" ::: Expression:"+
 					stmt+" ::: InputVariable: "+iv+" ::: More info:"+logEntry);
 			fw.append("\n");
 			fw.flush();
@@ -469,7 +469,7 @@ public class ExploreUtils {
 		}
 
 		if(SystemOut.debug )
-			System.out.println("[REAP][ExploreUtils] --> Unhandled issue in eval. Check unhandled.log");
+			System.out.println("[ReSPA][ExploreUtils] --> Unhandled issue in eval. Check unhandled.log");
 
 		return false;//any boolean
 
@@ -483,7 +483,7 @@ public class ExploreUtils {
 		try{
 			FileWriter fw = new FileWriter(unhandledLog,true);
 			fw.append("\n");
-			fw.append("[REAP][ExploreUtils][Unhandled] ::: id: "+unhandled_id+" ::: Expression type: "+stmt+" ::: Expression:"+
+			fw.append("[ReSPA][ExploreUtils][Unhandled] ::: id: "+unhandled_id+" ::: Expression type: "+stmt+" ::: Expression:"+
 					stmt+" ::: More info:"+logEntry);
 			fw.append("\n");
 			fw.flush();
@@ -495,7 +495,7 @@ public class ExploreUtils {
 		}
 
 		if(SystemOut.debug )
-			System.out.println("[REAP][ExploreUtils] --> Unhandled issue in eval. Check unhandled.log");
+			System.out.println("[ReSPA][ExploreUtils] --> Unhandled issue in eval. Check unhandled.log");
 
 		return false;//some boolean has to be the default, doesn't matter which
 
@@ -580,7 +580,7 @@ public class ExploreUtils {
 
 		//debug
 		if(SystemOut.print_constraints&&verbose)
-			System.out.println("[REAP][ExploreUtils] --> constraint: "+currentContraint.getLeft()+" "+
+			System.out.println("[ReSPA][ExploreUtils] --> constraint: "+currentContraint.getLeft()+" "+
 					currentContraint.getComparator()+" "+currentContraint.getRight()+" ;; "+
 					insn.getFileLocation()+" ;; "+currentPC.count()+" ;; ");
 
@@ -602,7 +602,7 @@ public class ExploreUtils {
 
 
 		if(SystemOut.print_constraints &&verbose)
-			System.out.println("[REAP][ExploreUtils] --> string constraint: "+currentStringConstraint.getLeft()+" "+
+			System.out.println("[ReSPA][ExploreUtils] --> string constraint: "+currentStringConstraint.getLeft()+" "+
 					currentStringConstraint.getComparator()+" "+currentStringConstraint.getRight()+" ;; "+
 					insn.getFileLocation()+" ;; "+currentPC.spc.count());
 
@@ -672,7 +672,7 @@ public class ExploreUtils {
 			return 0;//String.valueOf(constant-1).length(); //TODO: what if we already have a constraint x>10? then it should return at least 2
 		}
 		else
-			System.out.println("[REAP][BoundedYen][evalNumeric]: Unknown operation!");
+			System.out.println("[ReSPA][BoundedYen][evalNumeric]: Unknown operation!");
 
 		return 0;
 
@@ -718,7 +718,7 @@ public class ExploreUtils {
 			return 0; //empty string
 		}
 		else
-			System.out.println("[REAP][BoundedYen][evalString]: Unknown operation!");
+			System.out.println("[ReSPA][BoundedYen][evalString]: Unknown operation!");
 
 		return 0;
 	}
@@ -733,7 +733,7 @@ public class ExploreUtils {
 
 	private void memoryBound() {
 
-		System.out.println("[REAP][ExploreUtils]--> Memory Used: "+ManagementFactory.getMemoryMXBean().getHeapMemoryUsage()+"; constraint count: "+currentPC.count()+" ; time from start: "+(System.currentTimeMillis()-start));
+		System.out.println("[ReSPA][ExploreUtils]--> Memory Used: "+ManagementFactory.getMemoryMXBean().getHeapMemoryUsage()+"; constraint count: "+currentPC.count()+" ; time from start: "+(System.currentTimeMillis()-start));
 		if(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed()>1190695928){
 			System.out.println("memory usage: "+ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed()+" ;;; "+ManagementFactory.getMemoryMXBean().getHeapMemoryUsage());
 			System.out.println("solving");

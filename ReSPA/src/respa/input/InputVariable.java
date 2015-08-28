@@ -113,7 +113,7 @@ public abstract class InputVariable implements Comparable<InputVariable>{
 	
 	
 	
-	///////////////////// REAP-BD Stuff oct/2014
+	///////////////////// ReSPA-BD Stuff oct/2014
 	private int minimumCost=0;
 	public int getMinimumCost() {
 		return minimumCost;

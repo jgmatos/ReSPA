@@ -59,7 +59,7 @@ public class SQ_Remembering implements PQ {
 
 
 		if(contentmap.containsKey(hs.getLabel())){//not new but possibly cheaper 
-			System.out.println("[REAP][PriorityQueue]-> Replace!");
+			System.out.println("[ReSPA][PriorityQueue]-> Replace!");
 			contentmap.put(hs.getLabel(),hs);
 			visited.add(hs.getLabel());
 		}

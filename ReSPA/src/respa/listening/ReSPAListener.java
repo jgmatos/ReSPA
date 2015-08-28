@@ -211,25 +211,25 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 
 
 
-			System.out.println("[REAP][ExploreListener] --> loading input locations if any from "+System.getProperty("user.dir")+"/.respa/tmp/inputLocations.txt");
+			System.out.println("[ReSPA][ExploreListener] --> loading input locations if any from "+System.getProperty("user.dir")+"/.respa/tmp/inputLocations.txt");
 
 			this.inputLocationsSet = Loader.getInputLocations(System.getProperty("user.dir")+"/.respa/tmp/inputLocations.txt");
 
-			System.out.println("[REAP][ExploreListener] --> done");
+			System.out.println("[ReSPA][ExploreListener] --> done");
 
 
-			System.out.println("[REAP][ExploreListener] --> loading manual input locations if any...");
+			System.out.println("[ReSPA][ExploreListener] --> loading manual input locations if any...");
 
 			ReSPAConfig.manualInputLocationsSet = FileInInputLocation.extractFileIn();
 
 
-			System.out.println("[REAP][ExploreListener] --> done");
+			System.out.println("[ReSPA][ExploreListener] --> done");
 
 
 
 
 
-			System.out.println("[REAP][ExploreListener] --> loading source info... "+System.getProperty("user.dir")+"/.respa/tmp/classNames.txt");
+			System.out.println("[ReSPA][ExploreListener] --> loading source info... "+System.getProperty("user.dir")+"/.respa/tmp/classNames.txt");
 
 			this.classNames = Loader.getSources(System.getProperty("user.dir")+"/.respa/tmp/classNames.txt");
 
@@ -237,19 +237,19 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 				this.classNames=ClassFinder.getClasses();
 
 
-			System.out.println("[REAP][ExploreListener] --> done");
+			System.out.println("[ReSPA][ExploreListener] --> done");
 
 
 
 
 
 
-			System.out.println("[REAP][ExploreListener] --> loading crash info... "+System.getProperty("user.dir")+"/.respa/tmp/exceptionStackTrace.txt");
+			System.out.println("[ReSPA][ExploreListener] --> loading crash info... "+System.getProperty("user.dir")+"/.respa/tmp/exceptionStackTrace.txt");
 
 			this.crashMile = Loader.getStackTrace(System.getProperty("user.dir")+"/.respa/tmp/exceptionStackTrace.txt",this.classNames);
 
 
-			System.out.println("[REAP][ExploreListener] --> done");
+			System.out.println("[ReSPA][ExploreListener] --> done");
 
 
 
@@ -264,7 +264,7 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 
 
 
-			System.out.println("[REAP][ExploreListener] --> done");
+			System.out.println("[ReSPA][ExploreListener] --> done");
 
 			return true;
 
@@ -660,11 +660,7 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 			}				
 
 		}
-		else if(ReSPAConfig.stop_any_crash) {
-			String constraint = ConstraintClean.clean(((PCChoiceGenerator)vm.getChoiceGenerator()).getCurrentPC().spc.header);
-			System.out.println("\n\n\n\n F induced by the node holding this constraint: "+constraint+"\n\n\n\n");
-			fInducing.add(constraint);
-		}
+		
 
 
 	} 

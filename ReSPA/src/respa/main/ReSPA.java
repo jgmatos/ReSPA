@@ -1049,7 +1049,6 @@ public class ReSPA extends Search {
 
 	private void setListeners() {
 
-		System.out.println("aaaaaa "+super.listeners.length);
 		respalisteners = new ArrayList<ReSPAListener>();
 		for(SearchListener sl: super.listeners)
 			if(sl instanceof ReSPAListener)

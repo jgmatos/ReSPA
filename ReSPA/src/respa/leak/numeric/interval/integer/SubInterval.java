@@ -9,7 +9,7 @@ import respa.leak.numeric.interval.IsVoidException;
  * 
  * This class represents a bounded homogeneous numeric interval
  * Deals only with integers. For real numbers please see:
- * reap.leak.numeric.interval.real package
+ * respa.leak.numeric.interval.real package
  * 
  * @author Joao Matos / GSD INESC-ID
  *

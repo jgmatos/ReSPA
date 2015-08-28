@@ -7,7 +7,7 @@ package respa.output;
  * 
  * @author Joao Matos / GSD INESC-ID
  * 
- * Input -> REAP: Find Alternative input -> Output
+ * Input -> ReSPA: Find Alternative input -> Output
  *
  */
 public interface Output {

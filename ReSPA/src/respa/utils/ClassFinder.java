@@ -45,7 +45,7 @@ public class ClassFinder {
 			classes.add(dummy.trim());
 		}
 		
-		createFile(classes);//create the file
+//		createFile(classes,System.getProperty("user.dir")+"/.respa/.tmp/classNames.txt");//create the file
 
 		return classes;
 
@@ -96,12 +96,12 @@ public class ClassFinder {
 	
 
 	
-
-	private static void createFile(HashSet<String> classes) {
+	@SuppressWarnings("unused")
+	private static void createFile(HashSet<String> classes, String destDirectory) {
 		
 		try {
 
-			String destDirectory = System.getProperty("user.dir")+"/classNames.txt";
+//			String destDirectory = System.getProperty("user.dir")+"/classNames.txt";
 			FileWriter writter = new FileWriter(new File(destDirectory));
 			for(String s:classes)
 				writter.write(s+"\n");

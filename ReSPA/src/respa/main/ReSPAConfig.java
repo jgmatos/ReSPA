@@ -15,12 +15,8 @@ import java.util.Scanner;
 
 import respa.input.InputBuffer;
 import respa.input.InputVariable;
-import respa.input.queuedInput;
 import respa.main.ReSPAConfig;
-import respa.output.SystemOut;
-import respa.path.Path;
 import respa.stateLabeling.Location;
-import respa.stateLabeling.StateLabel;
 import respa.utils.FileInInputLocation;
 import respa.utils.InputLocation;
 
@@ -166,7 +162,6 @@ public class ReSPAConfig {
 	///////////////////////////////       Crash info       //////////////////////////////////
 
 
-	protected static String crashMile;
 	protected static String stackTrace;
 	public static boolean F=false;
 
@@ -184,8 +179,6 @@ public class ReSPAConfig {
 
 
 
-	//stop REAP at any crash even if it is not the crash in the original execution
-	public static  boolean stop_any_crash = false;
 
 
 
@@ -246,7 +239,6 @@ public class ReSPAConfig {
 
 
 
-			stop_any_crash = false;
 
 
 

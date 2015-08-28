@@ -14,7 +14,7 @@ import respa.leak.numeric.interval.NoLimitException;
  * This class represents an interval a heterogeneous numeric interval
  *
  * Deals only with integers. For real numbers please see:
- * reap.leak.numeric.interval.real package
+ * respa.leak.numeric.interval.real package
  *
  */
 public class Interval {

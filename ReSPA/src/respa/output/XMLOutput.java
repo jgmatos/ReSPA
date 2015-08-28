@@ -87,7 +87,7 @@ public final class XMLOutput extends BreakableOutput {
 	@Override
 	public void printToSystemin(){
 
-		System.out.println("[REAP][XMLOutput] --> Alternative input generated: ");
+		System.out.println("[ReSPA][XMLOutput] --> Alternative input generated: ");
 		
 		for(int i=0;i<this.input.size()-1;i++)
 			System.out.print(input.get(i).block);

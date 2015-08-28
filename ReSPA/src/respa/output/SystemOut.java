@@ -8,7 +8,7 @@ import java.util.Properties;
  * 
  * @author Joao Gouveia de Matos / GSD INESC-ID
  * 
- * This class controls what REAP prints in the console
+ * This class controls what ReSPA prints in the console
  *
  */
 @Deprecated
@@ -48,7 +48,7 @@ public class SystemOut {
 	
 	
 	/**
-	 * Print loading when REAP starts
+	 * Print loading when ReSPA starts
 	 */
 	public static boolean print_loading=true;
 	
@@ -122,7 +122,7 @@ public class SystemOut {
 	public static boolean print_constraints=false;
 
 	/**
-	 * print user input when REAP starts
+	 * print user input when ReSPA starts
 	 */
 	public static boolean print_input=false;
 	
