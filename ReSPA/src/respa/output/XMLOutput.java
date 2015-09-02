@@ -116,10 +116,10 @@ public final class XMLOutput extends BreakableOutput {
 
 		int residue = 0;
 
-		int size = 0;
+/*		int size = 0;
 		for(Block b:this.input)
 			for(int l=0;l<b.block.length();l++)
-				size++;
+				size++;*/
 
 		//first part is easy:
 		for(int i=0;i<this.input.size()-1;i++){

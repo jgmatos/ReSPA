@@ -24,7 +24,10 @@ public enum EntryType {
 	logOutOfR("logOutOfR"),
 	evaluate("evaluate"),
 	verbose("verbose"),
-	log("log");
+	log("log"),
+	logNewConstraint("newconstraint"),
+	logUnsatNode("unsat"),
+	logNewSymbolic("newSymbolic");
 	
 	
 	

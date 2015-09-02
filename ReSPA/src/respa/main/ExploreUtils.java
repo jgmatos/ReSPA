@@ -24,7 +24,7 @@ import respa.input.SymbolicInputInt;
 import respa.input.SymbolicInputString;
 import respa.leak.CollectedLeak;
 import respa.leak.string.MutableLeakyString;
-import respa.output.SystemOut;
+import respa.listening.ReSPAListener;
 import respa.stateLabeling.HashMile;
 import respa.stateLabeling.Labeling;
 import respa.stateLabeling.StateLabel;
@@ -171,7 +171,7 @@ public class ExploreUtils {
 
 			boolean stmtCompare=dissectConstraint(false);
 
-			
+
 			if(!stmtCompare) {//most cases
 
 				if(stmt instanceof SymbolicCharAtInteger)
@@ -264,125 +264,125 @@ public class ExploreUtils {
 	public boolean evalNode() {
 
 		try{
-		
-		if(start == 0)
-			start = System.currentTimeMillis();
 
-		currentState = labeling.getCurrentState();
+			if(start == 0)
+				start = System.currentTimeMillis();
 
-		if(vm.getChoiceGenerator()==null || !( vm.getChoiceGenerator() instanceof PCChoiceGenerator))
-			return true;
+			currentState = labeling.getCurrentState();
 
-		insn =vm.getChoiceGenerator().getInsn();
+			if(vm.getChoiceGenerator()==null || !( vm.getChoiceGenerator() instanceof PCChoiceGenerator))
+				return true;
 
-		currentCG =  (PCChoiceGenerator)vm.getChoiceGenerator();
-		currentPC = currentCG.getCurrentPC();
+			insn =vm.getChoiceGenerator().getInsn();
 
-
-		if(currentPC!=null&&currentPC.header!=null && 
-				!ReSPAConfig.ignoreNumeric){
-
-			boolean stmtCompare = dissectConstraint(false);
+			currentCG =  (PCChoiceGenerator)vm.getChoiceGenerator();
+			currentPC = currentCG.getCurrentPC();
 
 
-			if(!stmtCompare) {//most cases
+			if(currentPC!=null&&currentPC.header!=null && 
+					!ReSPAConfig.ignoreNumeric){
 
-				if(stmt instanceof SymbolicCharAtInteger)
+				boolean stmtCompare = dissectConstraint(false);
 
-					return handle_SymbolicCharAtInteger();
 
-				else if(stmt instanceof SymbolicLengthInteger)
+				if(!stmtCompare) {//most cases
 
-					return handle_SymbolicLengthInteger();
+					if(stmt instanceof SymbolicCharAtInteger)
 
-				else if(stmt instanceof SymbolicIndexOfCharInteger) 
+						return handle_SymbolicCharAtInteger();
 
-					return handle_SymbolicIndexOfCharInteger();
+					else if(stmt instanceof SymbolicLengthInteger)
 
-				else if(stmt instanceof BinaryLinearIntegerExpression) 
+						return handle_SymbolicLengthInteger();
 
-					return handle_BinaryLinearIntegerExpression();
+					else if(stmt instanceof SymbolicIndexOfCharInteger) 
 
-				else if(stmt instanceof gov.nasa.jpf.symbc.numeric.SymbolicInteger)
+						return handle_SymbolicIndexOfCharInteger();
 
-					return handle_SymbolicInteger();
+					else if(stmt instanceof BinaryLinearIntegerExpression) 
 
-				else if(stmt instanceof gov.nasa.jpf.symbc.numeric.IntegerConstant)
+						return handle_BinaryLinearIntegerExpression();
 
-					return handle_IntegerConstant();
+					else if(stmt instanceof gov.nasa.jpf.symbc.numeric.SymbolicInteger)
 
-				else //not implemented yet
+						return handle_SymbolicInteger();
 
-					return unhandled(11,stmt,"Source File Location: "+insn.getFileLocation());
+					else if(stmt instanceof gov.nasa.jpf.symbc.numeric.IntegerConstant)
+
+						return handle_IntegerConstant();
+
+					else //not implemented yet
+
+						return unhandled(11,stmt,"Source File Location: "+insn.getFileLocation());
+
+
+				}
+				else {
+
+					//eval input cost
+					//	currentEdge_Cost=evalStringCost(stringcomparator, ((StringConstant)constant).value);
+
+
+					if(stmt instanceof SymbolicCharAtInteger && constant instanceof SymbolicCharAtInteger)
+
+						return handle_unusual_SymbolicCharAtInteger();
+
+					else //not implemented yet
+
+						return unhandled(1333333,stmt,"Source File Location: "+insn.getFileLocation());
+
+
+				}
+
 
 
 			}
-			else {
-
-				//eval input cost
-				//	currentEdge_Cost=evalStringCost(stringcomparator, ((StringConstant)constant).value);
-
-
-				if(stmt instanceof SymbolicCharAtInteger && constant instanceof SymbolicCharAtInteger)
-
-					return handle_unusual_SymbolicCharAtInteger();
-
-				else //not implemented yet
-
-					return unhandled(1333333,stmt,"Source File Location: "+insn.getFileLocation());
-
-
-			}
-
-
-
-		}
-		else if(currentPC!=null&&currentPC.spc!=null&&currentPC.spc.header!=null && 
-				/*	( (this.lastStrConstraint==null) || 
+			else if(currentPC!=null&&currentPC.spc!=null&&currentPC.spc.header!=null && 
+					/*	( (this.lastStrConstraint==null) || 
 						!this.lastStrConstraint.equals(currentPC.spc.header)) &&*/
-				!ReSPAConfig.ignoreString){
-			/***
-			 * 
-			 * 
-			 * 
-			 * 
-			 * 
-			 * STRING OPERATIONS! 
-			 * 
-			 * 
-			 * 
-			 * 
-			 * **/
+					!ReSPAConfig.ignoreString){
+				/***
+				 * 
+				 * 
+				 * 
+				 * 
+				 * 
+				 * STRING OPERATIONS! 
+				 * 
+				 * 
+				 * 
+				 * 
+				 * **/
 
 
-			boolean stmtCompare = dissectStringConstraint(false);
+				boolean stmtCompare = dissectStringConstraint(false);
 
 
-			if(!stmtCompare) {//most cases
+				if(!stmtCompare) {//most cases
 
-				if(stmt instanceof StringSymbolic)
-					return handle_StringSymbolic();
-				else
-					return unhandled(17,stmt,"Source File Location: "+insn.getFileLocation());
+					if(stmt instanceof StringSymbolic)
+						return handle_StringSymbolic();
+					else
+						return unhandled(17,stmt,"Source File Location: "+insn.getFileLocation());
 
-			}
-			else{
-
-				if(stmt instanceof StringSymbolic && constant instanceof StringSymbolic){
-					return handle_BinaryStringSymbolic();
 				}
 				else{
 
-					return unhandled(1888,stmt,"Source File Location: "+insn.getFileLocation());
+					if(stmt instanceof StringSymbolic && constant instanceof StringSymbolic){
+						return handle_BinaryStringSymbolic();
+					}
+					else{
+
+						return unhandled(1888,stmt,"Source File Location: "+insn.getFileLocation());
+					}
 				}
 			}
-		}
-		else
-			return true;
-		
+			else
+				return true;
+
 		}
 		catch(Throwable t) {
-			
+
 			return unhandled(1353454, stmt, "");
 		}
 
@@ -399,8 +399,8 @@ public class ExploreUtils {
 		if(currentPC!=null)
 			ReSPAConfig.currentPathCondition = currentPC;
 
-		if(SystemOut.print_decisions )
-			System.out.println(debugMessage);
+
+		System.out.println(debugMessage);
 
 		return true;
 
@@ -418,7 +418,7 @@ public class ExploreUtils {
 
 	private boolean backtrack(int backtrack_id, String left, String comparator, String right) {
 
-	//	if(SystemOut.print_decisions)
+		//	if(SystemOut.print_decisions)
 		//	System.out.println("[ReSPA][ExploreUtils] --> BACKTRACK("+backtrack_id+"): the expression \""+left+" "+comparator+" "+right+"\" is false.");
 
 		backtracked.add(currentState);
@@ -437,7 +437,7 @@ public class ExploreUtils {
 	private boolean forward(int forward_id, String left, String comparator, String right) {
 
 
-	//	if(SystemOut.print_decisions)
+		//	if(SystemOut.print_decisions)
 		//	System.out.println("[ReSPA][ExploreUtils] --> FORWARD("+forward_id+"): the expression \""+left+" "+comparator+" "+right+"\" is true.");
 
 		if(ReSPAConfig.boundMemory)
@@ -468,8 +468,8 @@ public class ExploreUtils {
 		//do nothing
 		}
 
-		if(SystemOut.debug )
-			System.out.println("[ReSPA][ExploreUtils] --> Unhandled issue in eval. Check unhandled.log");
+
+		System.out.println("[ReSPA][ExploreUtils] --> Unhandled issue in eval. Check unhandled.log");
 
 		return false;//any boolean
 
@@ -494,8 +494,8 @@ public class ExploreUtils {
 			//do nothing
 		}
 
-		if(SystemOut.debug )
-			System.out.println("[ReSPA][ExploreUtils] --> Unhandled issue in eval. Check unhandled.log");
+
+		System.out.println("[ReSPA][ExploreUtils] --> Unhandled issue in eval. Check unhandled.log");
 
 		return false;//some boolean has to be the default, doesn't matter which
 
@@ -579,10 +579,10 @@ public class ExploreUtils {
 		}
 
 		//debug
-		if(SystemOut.print_constraints&&verbose)
-			System.out.println("[ReSPA][ExploreUtils] --> constraint: "+currentContraint.getLeft()+" "+
-					currentContraint.getComparator()+" "+currentContraint.getRight()+" ;; "+
-					insn.getFileLocation()+" ;; "+currentPC.count()+" ;; ");
+
+		notifyConstraint(" constraint: "+currentContraint.getLeft()+" "+
+				currentContraint.getComparator()+" "+currentContraint.getRight()+" ;; "+
+				insn.getFileLocation()+" ;; "+currentPC.count()+" ;; ");
 
 		return stmtCompare;
 	}
@@ -601,10 +601,10 @@ public class ExploreUtils {
 		currentState.setConstraint(currentConstraintAsString);
 
 
-		if(SystemOut.print_constraints &&verbose)
-			System.out.println("[ReSPA][ExploreUtils] --> string constraint: "+currentStringConstraint.getLeft()+" "+
-					currentStringConstraint.getComparator()+" "+currentStringConstraint.getRight()+" ;; "+
-					insn.getFileLocation()+" ;; "+currentPC.spc.count());
+
+		notifyConstraint(" string constraint: "+currentStringConstraint.getLeft()+" "+
+				currentStringConstraint.getComparator()+" "+currentStringConstraint.getRight()+" ;; "+
+				insn.getFileLocation()+" ;; "+currentPC.spc.count());
 
 
 		//Expression stmt,constant;
@@ -821,6 +821,7 @@ public class ExploreUtils {
 		String substring = tostring.substring(tostring.indexOf("buf"));
 		substring = substring.substring(0, substring.lastIndexOf("SYMSTRING")+9);
 		InputVariable iv = ReSPAConfig.symbvars_.get(substring);
+
 
 
 		if(iv instanceof SymbolicInputString) {
@@ -1576,14 +1577,14 @@ public class ExploreUtils {
 				cs.applyGreaterEqualsCharAt((char)((IntegerConstant)constant).value, ((IntegerConstant)charat.index).value);
 			else if(comparator.equals(Comparator.LE))
 				cs.applyLowerEqualsCharAt((char)((IntegerConstant)constant).value, ((IntegerConstant)charat.index).value);
-			
+
 			if(collected.contains(substring))//update existent
 				collected.update(cs);//replace the previous version with the clone
 			else
 				collected.add(cs);
 			//System.out.println("wtf: "+comparator+" ;; "+((char)((IntegerConstant)constant).value)+" = "+cs.getFastLeak());
-			
-			
+
+
 		}
 		else
 			unhandled(32,stmt,iv,"Source File Location: "+insn.getFileLocation()+" ;; "+substring);
@@ -1758,7 +1759,7 @@ public class ExploreUtils {
 	private CollectedLeak leak_SymbolicInteger(CollectedLeak collected) {
 
 		unhandled(1001,stmt,"Source File Location: "+insn.getFileLocation());
-		
+
 		/*		SymbolicInteger strsymb = (SymbolicInteger)stmt; //dont want to cast all the time
 		String tostring = strsymb.toString();
 		String substring = tostring.substring(tostring.indexOf("buf"));
@@ -1913,7 +1914,12 @@ public class ExploreUtils {
 
 
 
+	private void notifyConstraint(String constraint) {
 
+		for(ReSPAListener rl: ReSPA.getListeners())
+			rl.respa_newconstraint(constraint);
+
+	}
 
 
 

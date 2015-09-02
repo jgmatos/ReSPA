@@ -3,8 +3,9 @@ package respa.input;
 
 import java.util.ArrayList;
 
+import respa.listening.ReSPAListener;
+import respa.main.ReSPA;
 import respa.main.ReSPAConfig;
-import respa.output.SystemOut;
 import respa.utils.InputLocation;
 import gov.nasa.jpf.jvm.JVM;
 import gov.nasa.jpf.symbc.bytecode.BytecodeUtils;
@@ -15,18 +16,18 @@ import gov.nasa.jpf.symbc.string.StringSymbolic;
 
 public class Symbolic {
 
-	
+
 	public static int totalCreated = 0;
 	public static int justCreated = 0;
 
 
-	
+
 	public static StringSymbolic currentStringSymbolic=null;
-	
+
 	public static ArrayList<StringSymbolic> stringsymbolicvars = new ArrayList<StringSymbolic>();
-	
+
 	public static void newSymbolicInt(JVM vm, InputLocation il) {
-		
+
 		String name = "buf"+"["+il.location.getLine()+"]";
 		String symbname = BytecodeUtils.varName(name, VarType.INT);
 		IntegerExpression sym_v = new SymbolicInteger(symbname);
@@ -35,8 +36,8 @@ public class Symbolic {
 
 		vm.getCurrentThread().getTopFrame().setOperandAttr(sym_v);
 
-			System.out.println("[ReSPA][Symbolic] --> NEW SYMBC Int: "+name+" -> "+sym_v+" ; "+
-					vm.getLastInstruction().getFileLocation()+" ; value to anonymize: "+il.value);
+		notifyNewSymbolic("[ReSPA][Symbolic] --> NEW SYMBC Int: "+name+" -> "+sym_v+" ; "+
+				vm.getLastInstruction().getFileLocation()+" ; value to anonymize: "+il.value);
 
 		SymbolicInputInt sii = new SymbolicInputInt(ReSPAConfig.symbvars.size(),0);
 		InputVariable sii_ = ReSPAConfig.symbvars.get(sii.toString());
@@ -56,34 +57,33 @@ public class Symbolic {
 		ReSPAConfig.symbvars_.put(symbname, sii);//makes it easier
 		Symbolic.totalCreated++;
 		Symbolic.justCreated++;
-		
+
 	}
-	
-	
+
+
 	public static void newSymbolicString(JVM vm, InputLocation il) {
-	
+
 		String name = "buf"+"["+il.location.getLine()+"]";
 		String symbname = BytecodeUtils.varName(name, VarType.STRING);
-		StringSymbolic sym_v = new StringSymbolic(symbname);
+		StringSymbolic sym_v = new StringSymbolic(symbname,30);
 
 
-		
-		
+
+
 
 
 		vm.getCurrentThread().getTopFrame().setOperandAttr(sym_v);
-		
-		if(SystemOut.print_new_symb)
-			System.out.println("[ReSPA][Symbolic] --> NEW SYMBC String: "+name+" -> "+sym_v+" ; "+
-					vm.getLastInstruction().getFileLocation()+" ; value to anonymize: "+il.value);
+
+		notifyNewSymbolic("[ReSPA][Symbolic] --> NEW SYMBC String: "+name+" -> "+sym_v+" ; "+
+				vm.getLastInstruction().getFileLocation()+" ; value to anonymize: "+il.value);
 
 		currentStringSymbolic = sym_v;
-		
+
 		SymbolicInputString sis = new SymbolicInputString(ReSPAConfig.symbvars.size(),il.value.length(),0);
 		InputVariable sis_ = ReSPAConfig.symbvars.get(sis.toString());
 
 		Symbolic.stringsymbolicvars.add(sym_v);
-		
+
 		if(sis_==null || sis.getLength()==-1) {
 
 			sis.setSym(sym_v);
@@ -101,18 +101,17 @@ public class Symbolic {
 		Symbolic.justCreated++;
 	}
 
-	
+
 	public static void newSymbolicBoolean(JVM vm, InputLocation il) {
-		
+
 		String name = "buf"+"["+il.location.getLine()+"]";
 		String symbname = BytecodeUtils.varName(name, VarType.INT);
 		IntegerExpression sym_v = new SymbolicInteger(symbname,0,1);
 
 		vm.getCurrentThread().getTopFrame().setOperandAttr(sym_v);
 
-		if(SystemOut.print_new_symb)
-			System.out.println("[ReSPA][Symbolic] --> NEW SYMBC boolean: "+name+" -> "+sym_v+" ; "+
-					vm.getLastInstruction().getFileLocation()+" ; value to anonymize: "+il.value);
+		notifyNewSymbolic("[ReSPA][Symbolic] --> NEW SYMBC boolean: "+name+" -> "+sym_v+" ; "+
+				vm.getLastInstruction().getFileLocation()+" ; value to anonymize: "+il.value);
 
 		SymbolicInputInt sii = new SymbolicInputInt(ReSPAConfig.symbvars.size(),0);
 		InputVariable sii_ = ReSPAConfig.symbvars.get(sii.toString());
@@ -131,7 +130,24 @@ public class Symbolic {
 		ReSPAConfig.alreadyCreated.add(il);
 		Symbolic.totalCreated++;
 		Symbolic.justCreated++;
-		
+
 	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	private static void notifyNewSymbolic(String newSymbolic) {
+
+		for(ReSPAListener rl: ReSPA.getListeners())
+			rl.respa_newSymbolic(newSymbolic);
+
+	}
+
+	
 	
 }

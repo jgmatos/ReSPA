@@ -22,7 +22,7 @@ public class LogReSPA extends Log{
 	
 	public static void checkForOptions() {
 		
-		checkForOptions(System.getProperty("user.home")+"/.respa/log.properties");
+		checkForOptions(System.getProperty("user.home")+"/.respa/respaConfig/log.properties");
 		
 	}
 
@@ -88,6 +88,15 @@ public class LogReSPA extends Log{
 			if(options.containsKey("verbose"))
 				logOptions.put(EntryType.verbose,Boolean.valueOf(options.getProperty("verbose")));
 
+			if(options.containsKey("logNewConstraint"))
+				logOptions.put(EntryType.logNewConstraint,Boolean.valueOf(options.getProperty("logNewConstraint")));
+			
+			if(options.containsKey("logUnsat"))
+				logOptions.put(EntryType.logUnsatNode,Boolean.valueOf(options.getProperty("logUnsat")));
+			
+			if(options.containsKey("logNewSymbolic"))
+				logOptions.put(EntryType.logNewSymbolic,Boolean.valueOf(options.getProperty("logNewSymbolic")));
+			
 			logOptions.put(EntryType.logError,true);
 
 		}
@@ -140,6 +149,8 @@ public class LogReSPA extends Log{
 			logOptions.put(EntryType.verbose,false);
 		
 			logOptions.put(EntryType.logError,true);
+			
+			logOptions.put(EntryType.logNewConstraint,false);
 
 	}
 	

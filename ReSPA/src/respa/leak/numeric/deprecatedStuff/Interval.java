@@ -48,7 +48,6 @@ public class Interval {
 	
 	
 	
-	//o resto eh tudo igual.
 	
 	
 	

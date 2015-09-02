@@ -3,7 +3,6 @@ package respa.output;
 import gov.nasa.jpf.symbc.numeric.PathCondition;
 
 import java.util.HashMap;
-import java.util.Random;
 
 import respa.input.InputVariable;
 import respa.input.SymbolicInputInt;
@@ -92,12 +91,12 @@ public class OutputManager {
 
 		if(ReSPAConfig.residue){
 			int residue = output.getResidue();
-			System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(ReSPAConfig.totalChars))*100+"%");
+		//	System.out.println("[ReSPA][OutputManager] --> Residue: "+residue+"; "+(residue/Double.valueOf(ReSPAConfig.totalChars))*100+"%");
 			OutputManager.residue = residue;
 			OutputManager.residuePercent = (double)((Double.valueOf(residue)/Double.valueOf(ReSPAConfig.totalChars))*100);
 		}
 
-		System.out.println("[ReSPA][OutputManager] -->  Leakage: "+rleak+" bits; "+(rleak/8)+" Bytes; "+(rleak/(8.0*((double)ReSPAConfig.totalBytes)))*100.0+"%");
+//		System.out.println("[ReSPA][OutputManager] -->  Leakage: "+rleak+" bits; "+(rleak/8)+" Bytes; "+(rleak/(8.0*((double)ReSPAConfig.totalBytes)))*100.0+"%");
 		OutputManager.rleak=rleak;
 		OutputManager.rleakPercent=(rleak/(8.0*((double)ReSPAConfig.totalBytes)))*100.0;
 
@@ -206,25 +205,14 @@ public class OutputManager {
 
 
 
-
+/*
 	public void outputnew() {
 
 
 		Solver solver;
 		Output output;
 		HashMap<String, InputVariable> map;
-		//double additionalleak = 0.0;
 
-
-		//sort a path amongs the ones found
-		/*Random pathsorter = new Random();
-		PathCondition outputpath;
-		if(Core.allPaths.size()>1){
-			int sortedpath = 1+ pathsorter.nextInt(Core.allPaths.size()-1); // we add 1 so that we never sort the original path
-			outputpath = Core.allPaths.get(sortedpath);
-		}
-		else
-			outputpath = Core.allPaths.get(0);*/
 		Random pathsorter = new Random();
 		PathCondition outputpath;
 
@@ -323,7 +311,7 @@ public class OutputManager {
 		}
 
 
-	}
+	}*/
 
 
 

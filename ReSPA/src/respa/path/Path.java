@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-import respa.output.SystemOut;
 import respa.stateLabeling.HashMile;
 import respa.stateLabeling.Location;
 import respa.stateLabeling.Milestone;
@@ -368,8 +367,6 @@ public class Path {
 
 		}
 
-		if(SystemOut.print_loading)
-			System.out.println("[ReSPA][Path] --> loading complete: "+path.size()+" ;; "+miles.size()+" ;; "+states.size());
 
 
 	}

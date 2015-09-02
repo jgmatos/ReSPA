@@ -37,6 +37,7 @@ import respa.output.Output;
  * new input and build an output
  *
  */
+@SuppressWarnings({"deprecation","unused"})
 public abstract class Solver {
 
 
@@ -452,12 +453,12 @@ public abstract class Solver {
 			}
 			else if(stmt instanceof gov.nasa.jpf.symbc.numeric.SymbolicInteger) {
 
-				SymbolicInteger symbint = (SymbolicInteger)stmt; //dont want to cast all the time
+			//	SymbolicInteger symbint = (SymbolicInteger)stmt; //dont want to cast all the time
 
 			}
 			else if(stmt instanceof gov.nasa.jpf.symbc.numeric.IntegerConstant) {
 
-				gov.nasa.jpf.symbc.numeric.IntegerConstant stmtconst = (gov.nasa.jpf.symbc.numeric.IntegerConstant)stmt;
+			//	gov.nasa.jpf.symbc.numeric.IntegerConstant stmtconst = (gov.nasa.jpf.symbc.numeric.IntegerConstant)stmt;
 
 			}
 
@@ -529,7 +530,7 @@ public abstract class Solver {
 
 
 
-
+	
 	protected String getStringSolution(StringConstraint constraint) {
 
 

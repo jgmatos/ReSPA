@@ -273,7 +273,8 @@ public class ReSPAConfig {
 
 
 			////////////////    Search Options     /////////////////////
-			verbose = Boolean.valueOf(properties.getProperty("verbose"));
+			//verbose = Boolean.valueOf(properties.getProperty("verbose"));
+			verbose = false; //this option did not prove itself useful
 			symbString = Boolean.valueOf(properties.getProperty("symb_string"));
 			symbInt = Boolean.valueOf(properties.getProperty("symb_int"));
 

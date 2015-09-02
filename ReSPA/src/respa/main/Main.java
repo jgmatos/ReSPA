@@ -3,14 +3,11 @@ package respa.main;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.channels.FileChannel;
-import java.util.Properties;
 
 public class Main {
 
@@ -52,7 +49,7 @@ public class Main {
 
 
 		if(args.length==2) 
-			copyRespaProps(new File(System.getProperty("user.home")+"/.respa/respa.properties"));
+			copyRespaProps(new File(System.getProperty("user.home")+"/.respa/respaConfig/respa.properties"));
 		else
 			copyRespaProps(new File(args[2]));
 
@@ -84,13 +81,7 @@ public class Main {
 
 	}
 
-	private static String getJPFdir() throws FileNotFoundException, IOException {
 
-		Properties jpfsite = new Properties();
-		jpfsite.load(new FileReader(System.getProperty("user.home")+"/.jpf/site.properties"));
-		return jpfsite.getProperty("jpf-core");
-
-	}
 
 
 	private static void launch() throws IOException, InterruptedException {
@@ -104,7 +95,8 @@ public class Main {
 				"-Xmx2g",
 				"-Dfile.encoding=UTF-8",
 				"-jar",
-				getJPFdir()+"/build/RunJPF.jar",
+				//getJPFdir()+"/build/RunJPF.jar",
+				System.getProperty("user.home")+"/.respa/RunJPF.jar",
 				"+shell.port=4242",
 				incident_dir+"/ReSPA.jpf");
 

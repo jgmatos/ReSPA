@@ -319,7 +319,7 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 			//instruction at hand
 			gov.nasa.jpf.jvm.bytecode.Instruction lastInsn =  vm.getLastInstruction();
 
-
+			filterInsn(vm,lastInsn);
 
 			if(lastInsn !=null){ 
 
@@ -365,6 +365,30 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 
 
 
+	
+	
+	
+	private void filterInsn(JVM vm,gov.nasa.jpf.jvm.bytecode.Instruction lastInsn) {
+		
+		
+		String lastInsnString = lastInsn.toString();
+		
+		if( (lastInsnString.contains("java.io")&&lastInsnString.contains("Read"))|| 
+		    lastInsnString.contains("java.util.Scanner")||
+		(lastInsnString.toLowerCase().contains("console")&&(lastInsnString.contains("java.io")||lastInsnString.contains("java.lang")))
+		) {
+
+			vm.getCurrentThread().skipInstruction(lastInsn.getNext());
+
+		}
+		
+		
+		
+		
+	}
+	
+	
+	
 
 
 
@@ -459,8 +483,6 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 		if(lastInsn instanceof gov.nasa.jpf.jvm.bytecode.LocalVariableInstruction) {
 
 			if(lastInsn instanceof gov.nasa.jpf.jvm.bytecode.ASTORE) { //reference to other objects
-
-
 
 				handleSymbolic(lastInsn, vm);
 
@@ -1050,11 +1072,31 @@ public class ReSPAListener extends RespaPropertyListenerAdapter{
 
 
 
+	@Override
+	public void respa_newconstraint(String constraint) {
+		
+		LogReSPA.handleEvent(EntryType.logNewConstraint, constraint);
+		
+	}
 
 
+	
+	@Override
+	public void respa_unsatNode(String unsatnode) {
+		
+		LogReSPA.handleEvent(EntryType.logUnsatNode, unsatnode);
+		
+	}
 
-
-
+	
+	
+	@Override
+	public void respa_newSymbolic(String newSymbolic) {
+		
+		LogReSPA.handleEvent(EntryType.logNewSymbolic, newSymbolic);
+		
+	}
+	
 
 
 

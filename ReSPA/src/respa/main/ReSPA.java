@@ -210,7 +210,6 @@ public class ReSPA extends Search {
 					}
 					else {
 
-						notifyStartIteration(it);
 						pcs.add(fnode.getPC());
 
 
@@ -770,8 +769,7 @@ public class ReSPA extends Search {
 
 					}
 					else{
-						System.out.println("\n\n Unsat Node: "+isEndState()+" , "+isIgnoredState()+";; "+/*n.getLabel()+*/"\n\n");
-
+						notifyUnsat("\n\n Unsat Node.");
 					}
 
 
@@ -1044,8 +1042,10 @@ public class ReSPA extends Search {
 
 
 
-	private ArrayList<ReSPAListener> respalisteners;
-
+	private static ArrayList<ReSPAListener> respalisteners;
+	public static ArrayList<ReSPAListener> getListeners() {
+		return respalisteners;
+	}
 
 	private void setListeners() {
 
@@ -1199,7 +1199,12 @@ public class ReSPA extends Search {
 
 
 
-
+	private void notifyUnsat(String s) {
+		
+		for(ReSPAListener rl: respalisteners)
+			rl.respa_unsatNode(s);
+		
+	}
 
 
 

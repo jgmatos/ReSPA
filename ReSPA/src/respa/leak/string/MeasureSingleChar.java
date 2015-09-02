@@ -8,13 +8,11 @@ public class MeasureSingleChar {
 	
 	private int domain;
 	
-	private char token;
 	
 	
 	public MeasureSingleChar(char token) {
 		
 		domain = 256;
-		this.token = token;
 		solutions = new SolutionSet(256);
 		//solutions.addSolution(token);
 	

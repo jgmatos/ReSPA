@@ -156,10 +156,10 @@ public class BreakableOutput implements Output{
 			fw.flush();
 			fw.close();
 
-			if(SystemOut.debug){
+/*			if(SystemOut.debug){
 				for(int i=0;i<content.length();i++)
 					System.out.println("output["+i+"] = "+content.charAt(i)+" ("+((int)content.charAt(i))+")");
-			}
+			}*/
 
 		}
 		catch(Exception e) {

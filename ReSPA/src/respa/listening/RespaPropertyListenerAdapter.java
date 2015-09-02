@@ -45,6 +45,10 @@ public abstract class RespaPropertyListenerAdapter extends PropertyListenerAdapt
 	
 	
 	
+	public void respa_newconstraint(String constraint) {}
 	
+	public void respa_unsatNode(String unsatnode) {}
+	
+	public void respa_newSymbolic(String newSymbolic) {}
 	
 }

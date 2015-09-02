@@ -58,7 +58,7 @@ public class LeakyOutput implements Output{
 		if(!built)
 			build();
 		
-		System.out.println("\n\n"+output+"\n\n");
+		System.out.println("\n\nAlternative input:\n\n"+output+"\n\n");
 		
 		
 	}
