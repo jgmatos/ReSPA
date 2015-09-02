@@ -1,0 +1,153 @@
+
+
+#main class of the system under test
+target=edu.vt.middleware.password.Bug207Driver
+
+#listener
+listener = respa.listening.ReSPAListener
+
+#Search class
+search.class=respa.main.ReSPA
+
+
+
+#@using jpf-symbc
+
+
+jpf-symbc = /Users/jmatos/mysvn/workspace/jpf-symbc
+
+# we need to use ';' delimiters so that NetBeans/Ant can use this as a path spec
+jpf-symbc.native_classpath=\
+  ${jpf-symbc}/build/jpf-symbc.jar;\
+  ${jpf-symbc}/build/jpf-symbc-annotations.jar;\
+  ${jpf-symbc}/lib/choco-1_2_04.jar;\
+  ${jpf-symbc}/lib/choco-solver-2.1.1-20100709.142532-2.jar;\
+  ${jpf-symbc}/lib/STPJNI.jar;\
+  ${jpf-symbc}/lib/hampi.jar;\
+  ${jpf-symbc}/lib/scale.jar;\
+  ${jpf-symbc}/lib/automaton.jar;\
+  ${jpf-symbc}/lib/iasolver.jar;\
+  ${jpf-symbc}/lib/string.jar;\
+  ${jpf-symbc}/lib/commons-lang-2.4.jar;\
+  ${jpf-symbc}/lib/commons-math-1.2.jar;\
+  ${jpf-symbc}/lib/coral.jar;\
+  ${jpf-symbc}/lib/opt4j-2.2.jar;\
+  ${jpf-symbc}/lib/libcvc3.jar;\
+  ${jpf-symbc}/lib/cvc3jni;\
+  ${jpf-symbc}/lib/org.sat4j.core.jar;\
+   ${jpf-symbc}/lib/org.sat4j.pb.jar;\
+  ${jpf-symbc}/lib/aima-core.jar;\
+  ${jpf-symbc}/lib/yicesapijava.jar;\
+  ${jpf-symbc}/lib/YicesLite.jar;\
+  ${jpf-symbc}/lib/libyices;\
+  ${jpf-symbc}/lib/libYicesLite;\
+  ${jpf-symbc}/lib/z3;\
+  ${jpf-symbc}/lib/solver.jar;\
+  ${jpf-symbc}/lib\
+  /Users/jmatos/mysvn/workspace/ReSPA;\
+  /Users/jmatos/mysvn/workspace/ReSPA/bin;\
+  /Users/jmatos/mysvn/workspace/ReSPA/bin/reap;\
+  /Users/jmatos/mysvn/workspace/ReSPA/bin/reap/main
+
+
+boot_classpath=env
+
+classpath=/Users/jmatos/mysvn/workspace/Example_vt-password/bin
+
+sourcepath=/Users/jmatos/mysvn/workspace/Example_vt-password/src
+
+
+symbolic.method=edu.vt.middleware.password.Bug207Driver.main(con)
+
+
+
+
+
+vm.insn_factory.class=gov.nasa.jpf.symbc.SymbolicInstructionFactory
+
+
+
+
+
+
+
+
+
+
+
+
+
+vm.storage.class=nil
+
+
+search.multiple_errors=true
+
+
+
+
+
+
+
+jpf-symbc.peer_packages = gov.nasa.jpf.symbc,${JPF_java_lang_StringBuilder_TODO}
+
+
+
+search.depth_limit = 70000
+
+#symbolic.dp=no_solver
+symbolic.dp=choco
+#symbolic.string_dp=no_solver
+symbolic.string_dp=z3
+
+symbolic.min_int_=-500
+symbolic.max_int_=500
+
+
+choco.time_bound=30000 # default value is 30000
+
+
+
+
+ap.go_on=true
+
+#"def" the default value of randomize choices is not randomized
+#"path" randomizes choices using preset user-specified seed
+#"random" randomizes choices using a different seed at each trial
+#cg.randomize_choices = def
+cg.randomize_choices =NONE
+#cg.randomize_choices = var_seed
+
+
+
+
+cg.break_single_choice = false
+
+
+# default BooleanChoiceGenerator sequence: do we start with 'false'
+cg.boolean.false_first = true
+
+# do we want java.util.Random. nextXX() enumerate choices, or just return a single value?
+# (isn't implemented for all types yet)
+cg.enumerate_random=false
+
+# maximum number of processors returned by Runtime.availableProcessors(). If this is
+# greater than 1, the call represents a ChoiceGenerator
+cg.max_processors=1
+
+# if this option is true, when thread is started, CG is not created
+# but thread is added to the pool of threads for later scheduling
+# (when accessing shared variables or when other threads finish)
+cg.threads.break_start=false
+
+# if this option is true, CG is not created when yield() (Thread API)
+# is called
+cg.threads.break_yield=true
+
+# if this option is true, CG is not created when sleep() (Thread API)
+# is called
+cg.threads.break_sleep=true
+
+# set if we shold also break on array instructions, e.g. to detect races
+# for array elements. This is off by default because it can cause serious
+# state explosion
+cg.threads.break_arrays=false

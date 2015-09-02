@@ -1,0 +1,4 @@
+java.lang.RuntimeException
+	at edu.vt.middleware.password.Bug207Driver.assertRegex(Bug207Driver.java:162)
+	at edu.vt.middleware.password.Bug207Driver.check(Bug207Driver.java:86)
+	at edu.vt.middleware.password.Bug207Driver.main(Bug207Driver.java:26)
